@@ -59,7 +59,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $registeredDate;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
-    #[ORM\JoinColumn(nullable: false)]
     private $masteredSubject;
 
     public function getId(): ?int
