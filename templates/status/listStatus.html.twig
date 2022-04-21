@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Liste des produits{% endblock %}
+
+{% block body %}
+
+<style>
+    .flex-row {display:flex; padding: 5px;}
+    .button-blue {
+        background-color: #008CBA; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    .button-yellow {
+        background-color: #FFFF33;
+        border: none;
+        color: black;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        border-radius: 4px;
+        margin-left:10px;
+    }
+
+    .button-red {
+        background-color: #f44336;
+        border: none;
+        color: white;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        border-radius: 4px;
+        margin-left:10px;
+    }
+
+</style>
+
+<h1> Liste des Status </h1>
+
+<ul>
+    {% for statue in status %}
+    <div class="flex-row">
+        <li>{{ statue.name }} -> {{ statue.description }} -> {{ statue.id }}
+    </div>
+    {% endfor %}
+</ul>
+
+{% endblock %}
