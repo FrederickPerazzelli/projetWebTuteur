@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion utilisateurs{% endblock %}
+
+{% block body %}
+    <style>
+        table
+        {
+            border-collapse: collapse;
+        }
+        tr 
+        {
+            border: solid thin;
+        }
+        th, td
+        {
+            text-align: center;
+        }
+        table tr:nth-child(odd) td
+        {
+            background-color: #d6d6d6;
+        }
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
+        .arrow 
+        {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+
+        .up 
+        {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+        .down 
+        {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+
+        .flex-row 
+        {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .flex-column 
+        {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auto
+        {
+            margin: auto;
+        }
+
+        .col-1 { width: 8.33%; }
+        .col-2 { width: 16.66%; }
+        .col-3 { width: 25%; }
+        .col-4 { width: 33.33%; }
+        .col-5 { width: 41.66%; }
+        .col-6 { width: 50%; }
+        .col-7 { width: 58.33%; }
+        .col-8 { width: 66.66%; }
+        .col-9 { width: 75%; }
+        .col-10 { width: 83.33%; }
+        .col-11 { width: 91.66%; }
+        .col-12 { width: 100%; }
+
+        #searchFilter {
+            width: 100pt;
+        }
+    </style>
+    <h1>Utilisateurs</h1>
+    <button id="filterButton">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+    <div id="filters" hidden>
+        <div class="flex-row">
+            <div class="flex-column">
+                <b>Rôle</b>
+                {% for role in roles %}
+                    <div>
+                        <input class="roleFilter" type="checkbox" id="roleFilter{{ role.id }}" name="roleFilter{{ role.id }}" value="{{ role.name }}"/>
+                        <label for="roleFilter{{ role.id }}">{{ role.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="flex-column">
+                <b>Actif</b>
+                <div>
+                    <input class="activeFilter" type="checkbox" id="activeFilterTrue" name="activeFilterTrue" value="true"/>
+                    <label for="activeFilterTrue">Actif</label>
+                </div>
+                <div>
+                    <input class="activeFilter" type="checkbox" id="activeFilterFalse" name="activeFilterFalse" value="false"/>
+                    <label for="activeFilterFalse">Inactif</label>
+                </div>
+            </div>
+            <div class="flex-column">
+                <b>Rechercher</b>
+                <input type="text" id="searchFilter" name="searchFilter"/>
+            </div>
+        </div>
+        <button id="applyButton">Appliquer</button>
+    </div>
+    <table class="displayTable col-9 auto">
+        <tr>
+            <th></th>
+            <th>Image</th>
+            <th>Nom</th>
+            <th>Courriel</th>
+            <th>Role</th>
+            <th>Actif</th>
+        </tr>
+        {% for user in userList %}
+            <tr class="tableRow">
+                <td><input class="selectUser" type="checkbox" id="select{{ user.id }}" name="select{{ user.id }}"></td>
+                <td>
+                    {% if user.image %}
+                        <img alt="Image profil" src="data:image/png;base64,{{ user.image }}"></img>
+                    {% else %}
+                        <img/>
+                    {% endif %}
+                </td>
+                <td><a href="/profile/{{ user.id }}" class="name">{{ user.firstName }} {{ user.lastName }}</a></td>
+                <td class="email">{{ user.email }}</td>
+                <td class="role">{{ user.role.name }}</td>
+                <td>
+                    {% if user.validAccount %}
+                        <input class="active" type="checkbox" disabled checked>
+                    {% else %}
+                        <input class="active" type="checkbox" disabled>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <script async defer>
+        let filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function()
+        {
+            let filterDiv = document.getElementById('filters');
+            let arrow = document.getElementById('filterArrow');
+
+            arrow.classList.toggle('up');
+            arrow.classList.toggle('down');
+            filterDiv.toggleAttribute('hidden');
+        });
+
+        let applyButton = document.getElementById('applyButton');
+        applyButton.addEventListener('click', function()
+        {
+            let tableRows = document.getElementsByClassName('tableRow');
+
+            let roleFilters = document.getElementsByClassName('roleFilter');
+            let activeFilters = document.getElementsByClassName('activeFilter');
+            let searchFilter = document.getElementById('searchFilter').value;
+
+            let roleArray = [], activeArray = [];
+
+            // Check for filters selected
+            for (let rf of roleFilters) 
+            {
+                if (rf.checked)
+                    roleArray.push(rf.value);
+            }
+            for (let af of activeFilters) {
+                if (af.checked)
+                    activeArray.push(af.value);
+            }
+
+            // Apply filters
+            for (let tr of tableRows)
+            {
+                tr.removeAttribute('hidden');
+                if (roleArray.length > 0)
+                {
+                    let role = tr.querySelector('.role').innerHTML;
+                    if (!roleArray.includes(role))
+                        tr.setAttribute('hidden', '');
+                }
+
+                if (activeArray.length > 0) 
+                {
+                    let active = tr.querySelector('.active');
+                    if (!activeArray.includes(active.checked.toString()))
+                        tr.setAttribute('hidden', '');
+                }
+
+                if (searchFilter != '') 
+                {
+                    let name = tr.querySelector('.name').innerHTML.toLowerCase();
+                    let email = tr.querySelector('.email').innerHTML.toLowerCase();
+                    if (!name.includes(searchFilter.toLowerCase()) && !email.includes(searchFilter.toLowerCase()))
+                        tr.setAttribute('hidden', '');
+                }
+            }
+        });
+
+        let checkBoxes = document.getElementsByClassName('selectUser');
+
+        for (let i = 0; i < checkBoxes.length; i++) 
+        {
+            if (checkBoxes[i].checked)
+            {
+                console.log('checked');
+                break;
+            }
+        }
+    </script>
+{% endblock %}
