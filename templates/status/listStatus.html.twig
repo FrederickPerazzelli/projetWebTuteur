@@ -52,7 +52,7 @@
 <ul>
     {% for statue in status %}
     <div class="flex-row">
-        <li>{{ statue.name }} -> {{ statue.description }} -> {{ statue.id }}
+        <li>{{ statue.id }} - > {{ statue.name }} - > {{ statue.description }} - > {{ statue.statusType.name }} </li>
     </div>
     {% endfor %}
 </ul>
