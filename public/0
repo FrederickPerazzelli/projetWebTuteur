@@ -1,0 +1,9 @@
+[21-Apr-2022 20:16:09 Europe/Berlin] PHP Warning:  require(controller/StatusController.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\projetWebTuteur\public\api.php on line 27
+[21-Apr-2022 20:16:09 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'controller/StatusController.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\projetWebTuteur\public\api.php:27
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\projetWebTuteur\public\api.php on line 27
+[21-Apr-2022 20:16:50 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "App\Controller\StatusController" not found in C:\xampp\htdocs\projetWebTuteur\public\api.php:27
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\projetWebTuteur\public\api.php on line 27
