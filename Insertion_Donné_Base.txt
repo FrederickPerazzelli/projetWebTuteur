@@ -37,9 +37,9 @@ VALUES 	('Dimanche'),
 		('Samedi');
 		
 INSERT INTO User (role_id, mastered_subject_id, email, roles, password, first_name, last_name, institution, field, phone, birthdate, image, valid_account, registered_date)
-VALUES 	('1', NULL, 'Admin@gmail.com', 'ROLE_ADMIN', 'abcd1234', 'Admin', 'trasteur', NULL, NULL, NULL, 19930518, NULL, 1, 20220421),
-		('2', NULL, 'Étudiant@gmail.com', 'ROLE_USER', 'abcd1234', 'Etu', 'diant', 'Cegep Sherbrooke', 'Informatique', NULL, 20011027, NULL, 1, 20220421),
-		('3', 4, 'Tuteur@gmail.com', 'ROLE_USER', 'abcd1234', 'Tu', 'teur', 'Universitée de Sherbrooke', 'Informatique', NULL, 19801225, NULL, 1, 20220421);
+VALUES 	('1', NULL, 'Admin@gmail.com', ["ROLE_ADMIN"], 'abcd1234', 'Admin', 'trasteur', NULL, NULL, NULL, 19930518, NULL, 1, 20220421),
+		('2', NULL, 'Étudiant@gmail.com', ["ROLE_USER"], 'abcd1234', 'Etu', 'diant', 'Cegep Sherbrooke', 'Informatique', NULL, 20011027, NULL, 1, 20220421),
+		('3', 4, 'Tuteur@gmail.com', ["ROLE_USER"], 'abcd1234', 'Tu', 'teur', 'Universitée de Sherbrooke', 'Informatique', NULL, 19801225, NULL, 1, 20220421);
 		
 INSERT INTO availablity (day_id, begin_time, end_time)
 VALUES 	(2, 180000, 200000),
