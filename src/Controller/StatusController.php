@@ -8,6 +8,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\StatusRepository;
 use App\Entity\Status;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class StatusController extends AbstractController
 {
@@ -39,7 +43,30 @@ class StatusController extends AbstractController
                 'status' => $listStatus
             ]);
         }else{
-            return json_encode($listStatus, JSON_PRETTY_PRINT);
+            $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+            $json = $serializer->serialize($listStatus, 'json');
+            $response = new Response($json);
+            return $response;
+        }      
+    } 
+
+
+    // Montre seulement 1 status
+    #[Route('/status/{id}', name: 'app_statusId')]
+    public function status(ManagerRegistry $doctrine, $id, $API = false): Response
+    {
+        $status = $this->statusManager($doctrine)->findOneBy(['id' => $id]);
+    
+        if(!$API){
+            return $this->render('status/status.html.twig', [
+                'controller_name' => 'StatusController',
+                'status' => $status
+            ]);
+        }else{
+            $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+            $json = $serializer->serialize($status, 'json');
+            $response = new Response($json);
+            return $response;
         }      
     } 
 }
