@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 header('Content-Type: application/json');
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
 class ApiController extends AbstractController
 {
     //Route aller chercher la liste des Status
-    #[Route('/api/listeStatus', name: 'app_api_listStatus')]
+    #[Route('/api/statusList', name: 'api_statusList')]
     public function listeStatus(ManagerRegistry $doctrine): Response
     {
         $statusController = new StatusController;
@@ -22,7 +23,7 @@ class ApiController extends AbstractController
     }
 
     //Route aller chercher la liste des Status
-    #[Route('/api/status/{id}', name: 'app_api_statusId')]
+    #[Route('/api/status/{id}', name: 'api_statusId')]
     public function status(ManagerRegistry $doctrine, $id): Response
     {
         $statusController = new StatusController;

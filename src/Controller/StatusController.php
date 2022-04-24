@@ -22,17 +22,8 @@ class StatusController extends AbstractController
         return $doctrine->getManager()->getRepository(Status::class);
     }
 
-    // Default Route
-    #[Route('/status', name: 'app_status')]
-    public function index(): Response
-    {
-        return $this->render('status/index.html.twig', [
-            'controller_name' => 'StatusController',
-        ]);
-    }
-
     // Montre la liste des tous les status
-    #[Route('/statusList', name: 'app_statusList')]
+    #[Route('/listStatus', name: 'app_listStatus')]
     public function listStatus(ManagerRegistry $doctrine, $API = false): Response
     {
         $listStatus = $this->statusManager($doctrine)->findAll();
