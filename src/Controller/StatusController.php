@@ -22,7 +22,7 @@ class StatusController extends AbstractController
         return $doctrine->getManager()->getRepository(Status::class);
     }
 
-
+    // Default Route
     #[Route('/status', name: 'app_status')]
     public function index(): Response
     {
@@ -69,8 +69,4 @@ class StatusController extends AbstractController
             return $response;
         }      
     } 
-
-
-    
-
 }

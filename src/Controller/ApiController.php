@@ -11,15 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class ApiController extends AbstractController
 {
-    // Route bidon 
-    #[Route('/api', name: 'app_api')]
-    public function index(): Response
-    {
-        return $this->render('api/index.html.twig', [
-            'controller_name' => 'ApiController',
-        ]);
-    }
-
     //Route aller chercher la liste des Status
     #[Route('/api/listeStatus', name: 'app_api_listStatus')]
     public function listeStatus(ManagerRegistry $doctrine): Response
