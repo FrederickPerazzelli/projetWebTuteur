@@ -17,6 +17,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Role;
+use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,30 +45,34 @@ class UserController extends AbstractController
     }
 
     #[Route('/profile/{id}', name: 'profile')]
-    public function getProfile(EntityManagerInterface $em, $id)
+    public function getProfile(Request $request, EntityManagerInterface $em, $id)
     {
         $user = $em->getRepository(User::class)->find($id);
+        $image = $user->getImage();
 
-        if ($user->getImage())
-                $user->setImage(base64_encode(stream_get_contents($user->getImage())));
+        if ($image)
+            $image = base64_encode(stream_get_contents($image));
 
-        $form = $this->createForm(ProduitType::class, $produit);
-        $form->add('modifier', SubmitType::class, ['label' => 'Modification du produit']);
+        $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
-        if ($request->isMethod('post') && $form->isValid()) {
-            $em->persist($produit);
+        if ($form->isSubmitted() && $form->isValid()) {
+            var_dump($user);
+            $em->persist($user);
             $em->flush();
-            $session = $request->getSession();
-            $session->getFlashBag()->add('message', 'Le produit #' . $id . ' a bien été modifié');
 
-            return $this->redirect($this->generateUrl('produits'));
+            $session = $request->getSession();
+            $session->getFlashBag()->add('message', 'Le profil #' . $id . ' a bien été modifié');
+
+            return $this->redirect($this->generateUrl('users'));
         }
 
         return $this->render('user/profile.html.twig', [
             'controller_name' => 'UserController',
-            'user' => $user
+            'form' => $form->createView(),
+            'user' => $user,
+            'image' => $image
         ]);
     }
 

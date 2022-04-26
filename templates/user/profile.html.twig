@@ -15,7 +15,143 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion utilisateurs{% endblock %}
+{% block title %}Profil{% endblock %}
 
 {% block body %}
+    <style>
+        img 
+        {
+            object-fit: cover;
+            width: 150pt;
+            height: 150pt;
+            border: solid 1px;
+        }
+        .flex-row
+        {
+            display: flex;
+            flex-direction: row;
+        }
+        .flex-column
+        {
+            display: flex;
+            flex-direction: column;
+        }
+        .wrap
+        {
+            flex-wrap: wrap;
+        }
+        .col-1 { width: 8.33%; }
+        .col-2 { width: 16.66%; }
+        .col-3 { width: 25%; }
+        .col-4 { width: 33.33%; }
+        .col-5 { width: 41.66%; }
+        .col-6 { width: 50%; }
+        .col-7 { width: 58.33%; }
+        .col-8 { width: 66.66%; }
+        .col-9 { width: 75%; }
+        .col-10 { width: 83.33%; }
+        .col-11 { width: 91.66%; }
+        .col-12 { width: 100%; }
+
+        .auto
+        {
+            margin: auto;
+        }
+
+        .input
+        {
+            margin: 5pt 0pt;
+        }
+        .height-fit
+        {
+            height: fit-content;
+        }
+    </style>
+    <h1>Profil</h1>
+    {{ form_start(form) }}
+    <div id="profileForm" class="flex-row wrap">
+        <fieldset class="col-5">
+        <legend>Informations générales</legend>
+            <div class="flex-column input">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+            </div>
+            <div class="flex-column input">
+                {{ form_label(form.firstName) }}
+                {{ form_widget(form.firstName) }}
+            </div>
+            <div class="flex-column input">
+                {{ form_label(form.lastName) }}
+                {{ form_widget(form.lastName) }}
+            </div>
+            <div class="flex-column input">
+                {{ form_label(form.phone) }}
+                {{ form_widget(form.phone) }}
+            </div>
+            <div class="flex-column input">
+                {{ form_label(form.birthdate) }}
+                {{ form_widget(form.birthdate) }}
+            </div>
+        </fieldset>
+        <fieldset class="flex-column col-2 height-fit">
+            <legend>Compte</legend>
+            {{ form_label(form.role) }}
+            {{ form_widget(form.role) }}
+            {{ form_row(form.validAccount) }}
+        </fieldset>
+        {% if user.image %}
+            <img alt="Image profil" src="data:image/png;base64,{{ image }}"></img>
+        {% else %}
+            <img/>
+        {% endif %}
+        <fieldset class="col-5">
+            <legend>Informations académiques</legend>
+            <div class="flex-column input">
+                {{ form_label(form.institution) }}
+                {{ form_widget(form.institution) }}
+            </div>
+            <div class="flex-column input">
+                {{ form_label(form.field) }}
+                {{ form_widget(form.field) }}
+            </div>
+            <div class="flex-column input">
+                {{ form_label(form.masteredSubject) }}
+                {{ form_widget(form.masteredSubject) }}
+            </div>
+        </fieldset>
+    </div>
+    <button id="editButton" type="button">Modifier</button>
+    <div id="editButtons" hidden>
+        <button id="cancelButton" type="button">Annuler</button>
+        <button type="submit">Sauvegarder</button>
+    </div>
+    {{ form_end(form) }}
+    <!--===================== JavaScript =====================-->
+    <script>
+        let editButton = document.getElementById('editButton');
+        let inputs = document.querySelectorAll('input, select');
+        let editDiv = document.getElementById('editButtons');
+        editButton.addEventListener('click', function()
+        {
+            for (let input of inputs) 
+            {
+                input.removeAttribute('disabled');
+                editButton.setAttribute('hidden', '');
+
+                editDiv.removeAttribute('hidden');
+            }
+        });
+
+        let cancelbutton = document.getElementById('cancelButton');
+        cancelButton.addEventListener('click', function()
+        {
+            for (let input of inputs) 
+            {
+                input.setAttribute('disabled', '');
+                editButton.removeAttribute('hidden');
+
+                editDiv.setAttribute('hidden', '');
+            }
+        });
+    </script>
 {% endblock %}

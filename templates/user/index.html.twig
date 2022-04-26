@@ -101,6 +101,11 @@
     </style>
 
     <!--===================== HTML =====================-->
+    {% for message in app.session.flashbag.get('message') %}
+        <div class="d-flex alert alert-success">
+            {{message}}
+        </div>
+    {% endfor %}
     <h1>Utilisateurs</h1>
     <div class="flex-row">
         <button id="filterButton">Filtrer <i class="arrow down" id="filterArrow"></i></button>
