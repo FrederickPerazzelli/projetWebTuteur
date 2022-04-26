@@ -70,9 +70,8 @@ class ApiController extends AbstractController
     #[Route('/api/userList', name:'api_userList', methods:('GET'))]
     public function getUserList(ManagerRegistry $doctrine, Request $request): Response
     {
-        $userController = new StatusController;
-        //$listUser = $userController->userList($doctrine, true);       
-        //return json_decode($listStatus, true);
+        $userController = new UserController;
+        $listUser = $userController->users($doctrine, true);       
         return new Response($listUser);
     }
 
@@ -113,47 +112,28 @@ class ApiController extends AbstractController
     public function getComplaintList(ManagerRegistry $doctrine, Request $request):Response
     {
         $complaintController = new ComplaintController;
-        // $complaintList = $complaintController->complaintList($doctrine, true);
+        // $complaintList = $complaintController->complaints($doctrine, true);
         return new Response($complaintList);
     }
 
     // Get un complaint en particulier
-    #[Route('/api/complaint/{id}', name:'api_complaintId', methods:'GET')]
-    public function getComplaintWithId(ManagerRegistry $doctrine, Request $request): Response
+    #[Route('/api/complaintFilter/{filter}', name:'api_getComplaintWithFilter', methods:'GET')]
+    public function getComplaint(ManagerRegistry $doctrine, Request $request, $filter): Response
     {
         $complaintController = new ComplaintController;
-        // $complaint = $complaintController->getComplaintWithId($doctrine, true);
+        // $complaint = $complaintController->getComplaint($doctrine, $filter, true);
         return new Response($complaint);
     }
 
-    // Get complaint from User
-    #[Route('/api/complaint/{user}', name:'api_complaintUser', methods:'GET')]
-    public function getComplaintFromUser(ManagerRegistry $doctrine, $user, Request $request): Response
+    //Delete une complaint 
+    #[Route('/api/deleteComplaint/{id}', name:'api_deleteComplaint', methods:'DELETE')]
+    public function deleteComplaint(ManagerRegistry $doctrine, Request $request):Response
     {
         $complainteController = new ComplaintController;
-        // $complaints = $complaintController->getComplaintFromUser($doctrine, $user, true);
-        return new Response($complaints);
+        // $response = $complaintController->deleteComplaint($doctrine, true);
+        return new Response($response);
     }
 
-    // Get complaint from status
-    #[Route('/api/complaint/{status}', name:'api_complaintStatus', methods:'GET')]
-    public function getComplaintFromStatus(ManagerRegistry $doctrine, $status, Request $request): Response
-    {
-        $complaintController = new ComplaintController;
-        // $complaints = $complaintController->getComplaintFromStatus($doctrine, $status, true);
-        return new Response($complaints);
-    }
-
-    // Get complaint from admin
-    #[Route('/api/complaint/{admin}', name:'api_complaintAdmin', methods:'GET')]
-    public function getComplaintFromAdmin(ManagerRegistry $doctrine, $admin, Request $request): Response
-    {
-        $complaintController = new ComplaintController;
-        // $complaints = $complaintController->getComplaintFromAdmin($doctrine, $status, true);
-        return new Response($complaints);
-    }
-
-    
 
 
 }

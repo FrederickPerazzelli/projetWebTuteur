@@ -81,7 +81,7 @@ class StatusController extends AbstractController
             $this->statusManager($doctrine)->remove($status);
 
             $response = new jsonResponse();
-            $response->setContent(json_encode('{Le status a été supprimer}'));
+            $response->setContent(json_encode('Le status a été supprimer'));
             $response->headers->set('Content-Type', 'application/json');
             $response->setCharset('UTF-8');
             
