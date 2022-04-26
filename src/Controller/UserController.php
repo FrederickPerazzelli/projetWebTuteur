@@ -9,6 +9,7 @@
  =========================================================
  Historique de modifications :
  2022-04-21 - Jean-Nyckolas - Ajout de la route pour la liste d'utilisateurs
+ 2022-04-26 - Jean-Nyckolas - Ajout des fonction de suppression, activation et désactivation
  =========================================================
 ****************************************/
 
@@ -25,7 +26,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'users')]
-    public function index(EntityManagerInterface $em): Response
+    public function listUsers(EntityManagerInterface $em)
     {
         $users = $em->getRepository(User::class)->findAll();
         $roles = $em->getRepository(Role::class)->findAll();
@@ -43,7 +44,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/deleteUser/{id}', name: 'deleteUser')]
-    public function deleteUser(Request $request, EntityManagerInterface $em, $id): Response
+    public function deleteUser(Request $request, EntityManagerInterface $em, $id)
     {
         $userRepository = $em->getRepository(User::class);
         $user = $userRepository->find($id);
@@ -52,7 +53,31 @@ class UserController extends AbstractController
 
         $session = $request->getsession();
         $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été supprimé');
+    }
 
-        return $this->redirect($this->generateUrl('users'));
+    #[Route('/activateUser/{id}', name: 'activateUser')]
+    public function activateUser(Request $request, EntityManagerInterface $em, $id)
+    {
+        $userRepository = $em->getRepository(User::class);
+        $user = $userRepository->find($id);
+        $user->setValidAccount(true);
+        $em->persist($user);
+        $em->flush();
+
+        $session = $request->getsession();
+        $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été activé');
+    }
+
+    #[Route('/deactivateUser/{id}', name: 'deactivateUser')]
+    public function deactivateUser(Request $request, EntityManagerInterface $em, $id)
+    {
+        $userRepository = $em->getRepository(User::class);
+        $user = $userRepository->find($id);
+        $user->setValidAccount(false);
+        $em->persist($user);
+        $em->flush();
+
+        $session = $request->getsession();
+        $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été activé');
     }
 }

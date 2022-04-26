@@ -263,16 +263,15 @@
         {
             if (confirm('Voulez-vous supprimer les utilisateurs sélectionnés?'))
             {
-                let ids = [];
-
                 for (let cb of checkBoxes) 
                 {
                     if (cb.checked)
                     {
-                        ids.push(cb.value);
                         window.location.href = "deleteUser/"+cb.value;
                     }
                 }
+
+                window.location.href = 'users';
             }
         });
 
@@ -285,9 +284,11 @@
                 {
                     if (cb.checked)
                     {
-                        console.log('Utilisateur '+cb.value+' activé');
+                        window.location.href = "activateUser/"+cb.value;
                     }
                 }
+
+                window.location.href = 'users';
             }
         });
 
@@ -300,9 +301,11 @@
                 {
                     if (cb.checked)
                     {
-                        console.log('Utilisateur '+cb.value+' désactivé');
+                        window.location.href = "deactivateUser/"+cb.value;
                     }
                 }
+
+                window.location.href = 'users';
             }
         });
     </script>
