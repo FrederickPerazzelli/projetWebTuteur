@@ -60,4 +60,34 @@ class StatusController extends AbstractController
             return $response;
         }      
     } 
+
+    // Supprimer un status
+    #[Route('/deleteStatus/{id}', name: 'app_deleteStatus')]
+    public function deleteStatus(ManagerRegistry $doctrine, $id, $API = false): Response
+    {
+        $status = $this->statusManager($doctrine)->findOneBy(['id' => $id]);
+
+        if(!$API){
+            $this->statusManager($doctrine)->remove($status); 
+            $listeStatus = $this->statusManager($doctrine)->findAll();
+            $this->addFlash('add', 'Produit' .$id. 'supprimé');
+
+            return $this->render('produit/listProduits.html.twig', [
+                'controller_name' => 'ProduitController',
+                'produits' => $listeStatus
+            ]);
+
+        }else{
+            $this->statusManager($doctrine)->remove($status);
+
+            $response = new jsonResponse();
+            $response->setContent(json_encode('{Le status a été supprimer}'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+            
+            return $response;
+        }
+
+    }
+
 }

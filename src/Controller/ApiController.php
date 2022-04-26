@@ -25,29 +25,39 @@ use Symfony\Component\Routing\Annotation\Route;
 //use App\Controller\StatusController;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 class ApiController extends AbstractController
 {
     
     //Route aller chercher la liste des Status
-    #[Route('/api/statusList', name: 'api_statusList')]
+    #[Route('/api/statusList', name: 'api_statusList', methods:'GET')]
     public function getListStatus(ManagerRegistry $doctrine, Request $request): Response
     {
-        $statusController = new StatusController;
-        if($request->isMethod('GET')){
+            $statusController = new StatusController;
             $listStatus = $statusController->listStatus($doctrine, true);       
             //return json_decode($listStatus, true);
             return new Response($listStatus);
-        }
     }
 
-    //Route aller chercher la liste des StatusSSSS
-    #[Route('/api/status/{id}', name: 'api_statusId')]
-    public function getStatusWithId(ManagerRegistry $doctrine, $id): Response
+    //Route aller chercher un status selon le ID
+    #[Route('/api/status/{id}', name: 'api_statusId', methods:'GET')]
+    public function getStatusWithId(ManagerRegistry $doctrine, $id, Request $request): Response
+    {   
+            $statusController = new StatusController;
+            $status = $statusController->status($doctrine, $id, true);       
+            //return json_decode($listStatus, true);
+            return new Response($status);
+    }
+
+    // Delete un status dans la base de données
+    #[Route('/api/deleteStatus/{id}', name:'api_deleteStatus', methods:'DELETE')]
+    public function deleteStatus(ManagerRegistry $doctrine,$id, Request $request): Response
     {
         $statusController = new StatusController;
-        $listStatus = $statusController->status($doctrine, $id, true);       
-        //return json_decode($listStatus, true);
-        return new Response($listStatus);
+        $response = $statusController->deleteStatus($doctrine, $id, true);
+        return new Response($response);
     }
+
 }
