@@ -22,39 +22,33 @@ class UserType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Courriel',
-                'disabled' => 'disabled'
+                'label' => 'Courriel'
             ])
             ->add('firstName', TextType::class, [
-                'label' => 'Prénom',
-                'disabled' => 'disabled'
+                'label' => 'Prénom'
             ])
             ->add('lastName', TextType::class, [
-                'label' => 'Nom',
-                'disabled' => 'disabled'
+                'label' => 'Nom'
             ])
             ->add('institution', TextType::class, [
                 'label' => 'Institution d\'enseignement/d\'étude',
-                'disabled' => 'disabled',
                 'required' => false
             ])
             ->add('field', TextType::class, [
                 'label' => 'Programme d\'étude',
-                'disabled' => 'disabled',
                 'required' => false
             ])
             ->add('phone', TelType::class, [
                 'label' => 'Téléphone',
-                'disabled' => 'disabled',
                 'required' => false
             ])
             ->add('birthdate', DateType::class, [
                 'label' => 'Date de naissance',
-                'disabled' => 'disabled'
+                'format' => 'dd MM yyyy',
+                'years' => range(date('Y') - 100, date('Y'))
             ])  
             ->add('validAccount', CheckboxType::class, [
                 'label' => 'Compte actif',
-                'disabled' => 'disabled',
                 'required' => false
             ])
             ->add('role', EntityType::class, [
@@ -63,16 +57,14 @@ class UserType extends AbstractType
                 'required' => true,
                 'label' => 'Type de compte',
                 'expanded' => false,
-                'multiple' => false,
-                'disabled' => 'disabled'
+                'multiple' => false
             ])
             ->add('masteredSubject', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Catégorie',
-                'multiple' => false,
-                'disabled' => 'disabled'
+                'multiple' => false
             ])
             ->setMethod('POST')
         ;

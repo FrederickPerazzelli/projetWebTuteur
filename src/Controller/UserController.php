@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UserController extends AbstractController
 {
@@ -45,7 +46,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/profile/{id}', name: 'profile')]
-    public function getProfile(Request $request, EntityManagerInterface $em, $id)
+    public function getProfile(Request $request, EntityManagerInterface $em, $id): Response
     {
         $user = $em->getRepository(User::class)->find($id);
         $image = $user->getImage();
@@ -57,8 +58,8 @@ class UserController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            var_dump($user);
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
             $em->persist($user);
             $em->flush();
 
@@ -69,7 +70,6 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/profile.html.twig', [
-            'controller_name' => 'UserController',
             'form' => $form->createView(),
             'user' => $user,
             'image' => $image

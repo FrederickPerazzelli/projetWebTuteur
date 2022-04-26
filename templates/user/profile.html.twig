@@ -74,30 +74,36 @@
         <legend>Informations générales</legend>
             <div class="flex-column input">
                 {{ form_label(form.email) }}
-                {{ form_widget(form.email) }}
+                {{ form_widget(form.email, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.email) }}
             </div>
             <div class="flex-column input">
                 {{ form_label(form.firstName) }}
-                {{ form_widget(form.firstName) }}
+                {{ form_widget(form.firstName, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.firstName) }}
             </div>
             <div class="flex-column input">
                 {{ form_label(form.lastName) }}
-                {{ form_widget(form.lastName) }}
+                {{ form_widget(form.lastName, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.lastName) }}
             </div>
             <div class="flex-column input">
                 {{ form_label(form.phone) }}
-                {{ form_widget(form.phone) }}
+                {{ form_widget(form.phone, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.phone) }}
             </div>
             <div class="flex-column input">
                 {{ form_label(form.birthdate) }}
-                {{ form_widget(form.birthdate) }}
+                {{ form_widget(form.birthdate, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.birthdate) }}
             </div>
         </fieldset>
         <fieldset class="flex-column col-2 height-fit">
             <legend>Compte</legend>
             {{ form_label(form.role) }}
-            {{ form_widget(form.role) }}
-            {{ form_row(form.validAccount) }}
+            {{ form_widget(form.role, { 'attr':{'disabled':'disabled'} }) }}
+            {{ form_errors(form.role) }}
+            {{ form_row(form.validAccount, { 'attr':{'disabled':'disabled'} }) }}
         </fieldset>
         {% if user.image %}
             <img alt="Image profil" src="data:image/png;base64,{{ image }}"></img>
@@ -108,15 +114,18 @@
             <legend>Informations académiques</legend>
             <div class="flex-column input">
                 {{ form_label(form.institution) }}
-                {{ form_widget(form.institution) }}
+                {{ form_widget(form.institution, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.institution) }}
             </div>
             <div class="flex-column input">
                 {{ form_label(form.field) }}
-                {{ form_widget(form.field) }}
+                {{ form_widget(form.field, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.field) }}
             </div>
             <div class="flex-column input">
                 {{ form_label(form.masteredSubject) }}
-                {{ form_widget(form.masteredSubject) }}
+                {{ form_widget(form.masteredSubject, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_errors(form.masteredSubject) }}
             </div>
         </fieldset>
     </div>
