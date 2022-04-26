@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ComplaintController!{% endblock %}
+
+{% block body %}
+<div class="listePlainte">
+    <table>
+        <tr>                
+            <th> Id </th>
+            <th> Utilisateur </th>
+            <th> Desc </th>
+            <th> Date </th>
+            <th> Etat </th>
+            <th> idAdmin </th>
+
+        </tr>
+        {% for complaint in complaints%}
+            <tr>                
+                <td> {{complaint.ComplaintId}}</td>
+                <td> {{complaint.userName}}</td>
+                <td> {{complaint.description}}</td>
+                <td> {{complaint.date|date("m/d/Y") }}</td>
+                <td> 
+                    <select>
+                        {% for status in statusList%}
+                            {% if status.type%}
+                            <option id="etat_{{status.id|number_format}}" 
+
+                            {% if status.id == complaint.statusId%} 
+                                selected="selected"
+                            {% endif %}
+
+                            >
+                                {{status.name}}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+               
+                <td> {{complaint.adminId}}</td>
+
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
