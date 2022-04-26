@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'app_user')]
+    #[Route('/', name: 'users')]
     public function index(EntityManagerInterface $em): Response
     {
         $users = $em->getRepository(User::class)->findAll();

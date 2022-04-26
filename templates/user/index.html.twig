@@ -3,6 +3,7 @@
 {% block title %}Gestion utilisateurs{% endblock %}
 
 {% block body %}
+    <!--===================== CSS =====================-->
     <style>
         table
         {
@@ -63,9 +64,22 @@
         #searchFilter {
             width: 100pt;
         }
+
+        #userOptions {
+            margin-left: 15pt;
+        }
     </style>
+
+    <!--===================== HTML =====================-->
     <h1>Utilisateurs</h1>
-    <button id="filterButton">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+    <div class="flex-row">
+        <button id="filterButton">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+        <div id="userOptions" hidden>
+            <button id="deleteUsers">Supprimer</button>
+            <button id="activateUsers">Activer</button>
+            <button id="deactivateUsers">Désactiver</button>
+        </div>
+    </div>
     <div id="filters" hidden>
         <div class="flex-row">
             <div class="flex-column">
@@ -97,16 +111,16 @@
     </div>
     <table class="displayTable col-12 auto">
         <tr>
-            <th></th>
-            <th>Image</th>
-            <th>Nom</th>
-            <th>Courriel</th>
-            <th>Role</th>
-            <th>Actif</th>
+            <th class="col-1"></th>
+            <th class="col-1">Image</th>
+            <th class="col-3">Nom</th>
+            <th class="col-2">Courriel</th>
+            <th class="col-2">Role</th>
+            <th class="col-1">Actif</th>
         </tr>
         {% for user in userList %}
             <tr class="tableRow">
-                <td><input class="selectUser" type="checkbox" id="select{{ user.id }}" name="select{{ user.id }}"></td>
+                <td><input class="selectUser" type="checkbox" id="select{{ user.id }}" name="select{{ user.id }}" value="{{ user.id }}"></td>
                 <td>
                     {% if user.image %}
                         <img alt="Image profil" src="data:image/png;base64,{{ user.image }}"></img>
@@ -127,6 +141,8 @@
             </tr>
         {% endfor %}
     </table>
+
+    <!--===================== JavaScript =====================-->
     <script async defer>
         let filterButton = document.getElementById('filterButton');
         filterButton.addEventListener('click', function()
@@ -190,14 +206,69 @@
         });
 
         let checkBoxes = document.getElementsByClassName('selectUser');
-
-        for (let i = 0; i < checkBoxes.length; i++) 
+        for (let cb of checkBoxes) 
         {
-            if (checkBoxes[i].checked)
+            cb.addEventListener('click', function()
             {
-                console.log('checked');
-                break;
-            }
+                let checked = false;
+                for (let cb of checkBoxes) 
+                {
+                    if (cb.checked)
+                        checked = true;
+                }
+
+                let options = document.getElementById('userOptions');
+
+                if (checked)
+                    options.removeAttribute('hidden');
+                else
+                    options.setAttribute('hidden', '');
+            });
         }
+
+        let deleteButton = document.getElementById('deleteUsers');
+        deleteButton.addEventListener('click', function()
+        {
+            if (confirm('Voulez-vous supprimer les utilisateurs sélectionnés?'))
+            {
+                for (let cb of checkBoxes) 
+                {
+                    if (cb.checked)
+                    {
+                        console.log('Utilisateur '+cb.value+' supprimé');
+                    }
+                }
+            }
+        });
+
+        let activateButton = document.getElementById('activateUsers');
+        activateButton.addEventListener('click', function()
+        {
+            if (confirm('Voulez-vous activer les utilisateurs sélectionnés?'))
+            {
+                for (let cb of checkBoxes) 
+                {
+                    if (cb.checked)
+                    {
+                        console.log('Utilisateur '+cb.value+' activé');
+                    }
+                }
+            }
+        });
+
+        let deactivateButton = document.getElementById('deactivateUsers');
+        deactivateButton.addEventListener('click', function()
+        {
+            if (confirm('Voulez-vous désactiver les utilisateurs sélectionnés?'))
+            {
+                for (let cb of checkBoxes) 
+                {
+                    if (cb.checked)
+                    {
+                        console.log('Utilisateur '+cb.value+' désactivé');
+                    }
+                }
+            }
+        });
     </script>
 {% endblock %}
