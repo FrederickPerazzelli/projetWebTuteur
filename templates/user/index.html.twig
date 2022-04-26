@@ -263,11 +263,14 @@
         {
             if (confirm('Voulez-vous supprimer les utilisateurs sélectionnés?'))
             {
+                let ids = [];
+
                 for (let cb of checkBoxes) 
                 {
                     if (cb.checked)
                     {
-                        console.log('Utilisateur '+cb.value+' supprimé');
+                        ids.push(cb.value);
+                        window.location.href = "deleteUser/"+cb.value;
                     }
                 }
             }
