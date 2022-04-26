@@ -1,0 +1,71 @@
+INSERT INTO role (name, description)
+VALUES  ('Administrateur', 'Administrateur de la plateforme'),
+		('Étudiant', 'Étudiant sur la plateforme'),
+		('Tuteur', 'Tuteur, aide les étudiants de la plateforme');
+		
+INSERT INTO category ( name, description)
+VALUES 	('Francais', 'Langue francais'),
+		('Anglais', 'Langue Anglaise'),
+		('Histoire', 'Histoire du monde'),
+		('Informatique', 'L\'informatique'),
+		('Réseau','Réseau');
+		
+INSERT INTO status_type (name, description)
+VALUES 	('complaint', 'Status des plaintes'),
+		('meeting', 'Status des rencontres'),
+		('demand', 'Status des demandes');
+		
+INSERT INTO status (status_type_id, name, description)
+VALUES 	('1', 'En attente', 'Plainte en attente'),
+		('1', 'Consulté', 'La plainte a été prise en charge par un admin'),
+		('1', 'Terminé', 'La plainte a été résolu'),
+		('2', 'En attente', 'La rencontre est en attente de comfirmation'),
+		('2', 'Accepté' , 'La rencontre a été accepté'),
+		('2', 'Refusé', 'La rencontre a été refusé'),
+		('2', 'Complété', 'La rencontre est terminé'),
+		('2', 'Annuler', 'La rencontre est annuler'),
+		('3', 'En cours', 'La demandes est en cours'),
+		('3', 'Complété', 'La question a été répondue');
+
+INSERT INTO week_day (name)
+VALUES 	('Dimanche'),
+		('Lundi'),
+		('Mardi'),
+		('Mercredi'),
+		('Jeudi'),
+		('Vendredi'),
+		('Samedi');
+		
+INSERT INTO User (role_id, mastered_subject_id, email, roles, password, first_name, last_name, institution, field, phone, birthdate, image, valid_account, registered_date)
+VALUES 	('1', NULL, 'Admin@gmail.com', ["ROLE_ADMIN"], 'abcd1234', 'Admin', 'trasteur', NULL, NULL, NULL, 19930518, NULL, 1, 20220421),
+		('2', NULL, 'Étudiant@gmail.com', ["ROLE_USER"], 'abcd1234', 'Etu', 'diant', 'Cegep Sherbrooke', 'Informatique', NULL, 20011027, NULL, 1, 20220421),
+		('3', 4, 'Tuteur@gmail.com', ["ROLE_USER"], 'abcd1234', 'Tu', 'teur', 'Universitée de Sherbrooke', 'Informatique', NULL, 19801225, NULL, 1, 20220421);
+		
+INSERT INTO availablity (day_id, begin_time, end_time)
+VALUES 	(2, 180000, 200000),
+		(3, 100000, 120000),
+		(5, 143000, 163000);
+		
+INSERT INTO user_availablity(user_id, availablity_id)
+VALUES 	(3, 1),
+		(3, 2),
+		(3, 3);
+			
+INSERT INTO complaint (user_id, admin_id, status_id, complaint_date, description)
+VALUES 	(2, 1, 1, 20220421, 'Probleme avec la rencontre'),
+		(3, 1, 2, 20220421, 'Étudiant malpropre'),
+		(2, 1, 3, 20220421, 'Tuteur immonde');
+		
+INSERT INTO meeting (student_id, tutor_id, status_id, motive, meeting_time, location, comments)
+VALUES	(2, 3, 5, 'Rencontre pour un site web' , 180000, 'En ligne', 'J\'ai un problème avec mon symfony'),
+		(2, 3, 6, 'Rencontre pour site web', 180000, 'Café farot', 'J\'ai un problème avec mon modèle MVC');
+	
+INSERT INTO demand(category_id, status_id, title, subject, publish_date, comments)
+VALUES 	(1, 10, 'Essai #3' , 'Rédaction', 20220421180000, 'J\'ai un problème avec mon essai voici les détails : ...'),
+		(3, 9, 'Napoléon', 'Recherche', 20220421100000, 'Quelqu\'un connais Napoléon personnellement, j\'aimerais le rencontrer');
+		
+INSERT INTO answer (demand_id, user_id, answer_date, comments)
+VALUES 	(1, 3, 20220422000000, 'Voici la réponse'),
+		(2, 3, 20220421200000, 'Napoléon visite ma tante souvent, je t\envoie l\'adresse');
+
+		
