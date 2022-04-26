@@ -13,11 +13,17 @@
         {
             border: solid thin;
         }
+        th 
+        {
+            height: 30pt;
+            background-color: #e34958;
+            color: white;
+        }
         th, td
         {
             text-align: center;
         }
-        table tr:nth-child(odd) td
+        table tr:not([hidden]):nth-child(odd) td
         {
             background-color: #d6d6d6;
         }
