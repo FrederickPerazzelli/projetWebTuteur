@@ -18,6 +18,7 @@ use App\Entity\User;
 use App\Entity\Role;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -39,5 +40,19 @@ class UserController extends AbstractController
             'userList' => $users,
             'roles' => $roles
         ]);
+    }
+
+    #[Route('/deleteUser/{id}', name: 'deleteUser')]
+    public function deleteUser(Request $request, EntityManagerInterface $em, $id): Response
+    {
+        $userRepository = $em->getRepository(User::class);
+        $user = $userRepository->find($id);
+        $userRepository->remove($user);
+        $em->flush();
+
+        $session = $request->getsession();
+        $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été supprimé');
+
+        return $this->redirect($this->generateUrl('users'));
     }
 }

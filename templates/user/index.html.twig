@@ -25,6 +25,14 @@
         {
             border-collapse: collapse;
         }
+        button 
+        {
+            margin: 5px 0px;
+        }
+        a
+        {
+            text-decoration: none;
+        }
         tr 
         {
             border: solid thin;
@@ -138,6 +146,7 @@
             <th class="col-3">Nom</th>
             <th class="col-2">Courriel</th>
             <th class="col-2">Role</th>
+            <th class="col-2">Date création</th>
             <th class="col-1">Actif</th>
         </tr>
         {% for user in userList %}
@@ -153,6 +162,7 @@
                 <td><a href="/profile/{{ user.id }}" class="name">{{ user.firstName }} {{ user.lastName }}</a></td>
                 <td class="email">{{ user.email }}</td>
                 <td class="role">{{ user.role.name }}</td>
+                <td class="date">{{ user.registeredDate|date('Y-m-d') }}</td>
                 <td>
                     {% if user.validAccount %}
                         <input class="active" type="checkbox" disabled checked>
