@@ -43,6 +43,34 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/profile/{id}', name: 'profile')]
+    public function getProfile(EntityManagerInterface $em, $id)
+    {
+        $user = $em->getRepository(User::class)->find($id);
+
+        if ($user->getImage())
+                $user->setImage(base64_encode(stream_get_contents($user->getImage())));
+
+        $form = $this->createForm(ProduitType::class, $produit);
+        $form->add('modifier', SubmitType::class, ['label' => 'Modification du produit']);
+
+        $form->handleRequest($request);
+
+        if ($request->isMethod('post') && $form->isValid()) {
+            $em->persist($produit);
+            $em->flush();
+            $session = $request->getSession();
+            $session->getFlashBag()->add('message', 'Le produit #' . $id . ' a bien été modifié');
+
+            return $this->redirect($this->generateUrl('produits'));
+        }
+
+        return $this->render('user/profile.html.twig', [
+            'controller_name' => 'UserController',
+            'user' => $user
+        ]);
+    }
+
     #[Route('/deleteUser/{id}', name: 'deleteUser')]
     public function deleteUser(Request $request, EntityManagerInterface $em, $id)
     {
