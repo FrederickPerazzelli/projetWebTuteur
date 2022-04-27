@@ -120,10 +120,14 @@ class ApiController extends AbstractController
 
     // Ajoute un utilisateur dans la base données via l'API
     #[Route('/api/addUser', name:'api_addUser', methods:'POST')]
-    public function addUser(ManagerRegistry $doctrine, Request $request) : Response
+    public function addUser(EntityManagerInterface $em, Request $request) : Response
     {
-        $userController = new UserController;
-        // $reponse = $userController->addUser($doctrine, jsonArray[], true);
+        //$userController = new UserController;
+       // $reponse = $userController->addUser($em, $request);
+        
+        $statusController = new StatusController;
+        $reponse = $statusController->addUser($em, $request);
+
         return new Response($reponse);
     }
 

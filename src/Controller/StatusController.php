@@ -73,19 +73,31 @@ class StatusController extends AbstractController
             $request->getContent(), true
         );
 
-        $newStatus = new Status;
+        if(empty($body)){
+            $response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
 
-        $statusType = new StatusType;
-        $statusType = $em->getRepository(StatusType::class)->find($body['statusType']);
+            return $response;
+        }
+            $newStatus = new Status;
+            $statusType = new StatusType;
+            $statusType = $em->getRepository(StatusType::class)->find($body['statusType']);
 
-        $newStatus->setStatusType($statusType);
-        $newStatus->setName($body['name']);
-        $newStatus->setDescription($body['description']);
+            $newStatus->setStatusType($statusType);
+            $newStatus->setName($body['name']);
+            $newStatus->setDescription($body['description']);
 
-        $em->persist($newStatus);
-        $em->flush();
+            $em->persist($newStatus);
+            $em->flush();
 
-        return new jsonResponse($body);
+            $response = new jsonResponse();
+            $response->setContent(json_encode('Le status a été ajouter'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;
     }
 
     // Supprimer un status
