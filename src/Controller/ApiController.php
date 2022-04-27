@@ -110,7 +110,14 @@ class ApiController extends AbstractController
     }
 
 
-
+    // Get une plainte dans la base de données via l'API
+    #[Route('/api/getComplaint/{id}', name:'api_getComplaint', methods:'GET')]
+    public function getComplaintWithId(ManagerRegistry $doctrine, Request $request) : Response
+    {
+        $complaintController = new ComplaintController;
+        $response = $complaintController->getComplaintWithId($doctrine, $id);
+        return new Response($response);
+    }
 
 
 
