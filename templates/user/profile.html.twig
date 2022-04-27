@@ -66,10 +66,24 @@
         {
             height: fit-content;
         }
+        .height-fill
+        {
+            height: fit-content;
+        }
         .right
         {
             margin-left: auto;
             margin-right: 0;
+        }
+        #meetings
+        {
+            flex-grow: 1;
+        }
+        #meetings div
+        {
+            height: 200pt;
+            overflow-wrap: break-word;
+            overflow-y: scroll;
         }
     </style>
     <h1>Profil</h1>
@@ -104,18 +118,19 @@
                     {{ form_row(form.validAccount, { 'attr':{'disabled':'disabled'} }) }}
                 </fieldset>
             </div>
-            <fieldset>
+            <fieldset id="meetings">
                 <legend>Rencontres</legend>
-                {% for meeting in studentMeetings %}
-                    <p>{{ meeting.date|date('Y-m-d') }} en tant qu'étudiant avec <a href="/profile/{{meeting.tutor.id}}">{{meeting.tutor.firstName}} {{meeting.tutor.lastName}}</a></p>
-                {% endfor %}
-                {% for meeting in tutorMeetings %}
-                    <p>{{ meeting.date|date('Y-m-d') }} en tant que tuteur avec <a href="/profile/{{meeting.student.id}}">{{meeting.student.firstName}} {{meeting.student.lastName}}</a></p>
-                {% endfor %}
-                {% if studentMeetings is empty and tutorMeetings is empty %}
-                    <p>Aucune rencontre</p>
-                {% endif %}
-                
+                <div>
+                    {% for meeting in studentMeetings %}
+                        <p>{{ meeting.date|date('Y-m-d') }} en tant qu'étudiant avec <a href="/profile/{{meeting.tutor.id}}">{{meeting.tutor.firstName}} {{meeting.tutor.lastName}}</a></p>
+                    {% endfor %}
+                    {% for meeting in tutorMeetings %}
+                        <p>{{ meeting.date|date('Y-m-d') }} en tant que tuteur avec <a href="/profile/{{meeting.student.id}}">{{meeting.student.firstName}} {{meeting.student.lastName}}</a></p>
+                    {% endfor %}
+                    {% if studentMeetings is empty and tutorMeetings is empty %}
+                        <p>Aucune rencontre</p>
+                    {% endif %}
+                </div>
             </fieldset>
         </div>
     </div>
