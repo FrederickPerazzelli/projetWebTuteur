@@ -128,35 +128,4 @@ class StatusController extends AbstractController
         }
 
     }
-
-
-    // Get Status with filter
-    // Renvoie la liste des tuteurs selon le sujet d'étude
-	//#[Route('/getTutors/{filter}', name:'app_tutorsFilter')]
-	public function getStatusWithFilter(EntityManagerInterface $em, $filter): Response
-	{
-		$listTutors = $em->getRepository(User::class)->findBy(array('role' => 3,  'masteredSubject' => $filter));
-
-        //$listStatus = $em->getRepository(Status::class)->findBy(array('statusType' => $filter));
-        //var_dump($listTutors);
-        //$listTutors = $em->getRepository(User::class)->findAll();   
-
-        if(empty($listTutors)){
-		
-			$response = new jsonResponse();
-            $response->setContent(json_encode('Erreur'));
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setCharset('UTF-8');
-
-            return $response;
-		
-		}
-		
-		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
-		$json = $serializer->serialize($listTutors, 'json');
-		$response = new Response($json);
-			
-		return $response;
-        
-    }
 }
