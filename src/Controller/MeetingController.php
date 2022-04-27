@@ -53,7 +53,7 @@ class MeetingController extends AbstractController
     {   
         $meeting = $this->meetingManager($doctrine)->find($id);
 
-        if($API){
+        if(!$API){
             
             $meeting = $this->meetingManager($doctrine)->find($id);
 

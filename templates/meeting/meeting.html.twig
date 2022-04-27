@@ -88,12 +88,15 @@
     <div id="profileForm" class="flex-row wrap">
         <div class="flex-column col-5">
             <fieldset>
-                <legend>Informations générales</legend>
+                <legend>Informations sur la rencontre</legend>
                 {{ form_row(form.motive, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.student, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.tutor, { 'attr':{'disabled':'disabled'} }) }}
                 {{ form_row(form.date, { 'attr':{'disabled':'disabled'} }) }}
                 {{ form_row(form.meetingTime, { 'attr':{'disabled':'disabled'} }) }}
                 {{ form_row(form.location, { 'attr':{'disabled':'disabled'} }) }}
                 {{ form_row(form.comments, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.status, { 'attr':{'disabled':'disabled'} }) }}
             </fieldset>
         </div>
     </div>

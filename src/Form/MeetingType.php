@@ -4,13 +4,14 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\Role;
-use App\Entity\Category;
+use App\Entity\Status;
 use App\Entity\Meeting;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -22,28 +23,45 @@ class MeetingType extends AbstractType
     {
         $builder
             ->add('date', BirthdayType::class, [
-                'label' => 'Date'
+                'label' => 'Date',
+                'disabled' => True
             ])
             ->add('meetingTime', TimeType::class, [
-                'label' => 'Heure'
+                'label' => 'Heure',
+                'disabled' => True
             ])
             ->add('motive', TextType::class, [
-                'label' => 'Sujet'
+                'label' => 'Sujet',
+                'disabled' => True
             ])
             ->add('location', TextType::class, [
-                'label' => 'Location'
+                'label' => 'Location',
+                'disabled' => True
             ])
-            ->add('comments', TextType::class, [
-                'label' => 'Commentaire'
+            ->add('comments', TextareaType::class, [
+                'label' => 'Commentaire',
+                'disabled' => True
             ])
-            ->add('student', EmailType::class, [
-                'label' => 'Étudiant'
+
+            ->add('student', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email',
+                'label' => 'Étudiant',
+                'disabled' => True
             ])
-            ->add('tutor', EmailType::class, [
-                'label' => 'Tuteur'
+
+            ->add('tutor', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email',
+                'label' => 'Tuteur',
+                'disabled' => True
             ])
-            ->add('status', TextType::class, [
-                'label' => 'Status'
+
+            ->add('status', EntityType::class, [
+                'class' => Status::class,
+                'choice_label' => 'name',
+                'label' => 'Status',
+                'disabled' => True
             ])
         ;
     }

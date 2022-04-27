@@ -144,7 +144,7 @@ class ApiController extends AbstractController
     public function meetingWithId(ManagerRegistry $doctrine, Request $request, $id) : Response
     {
         $meetingManager = new MeetingController;
-        $meetingList = $meetingManager->meetingId($doctrine, $id);
+        $meetingList = $meetingManager->meetingId($doctrine, $id, true);
         return new Response($meetingList);
     }
 
