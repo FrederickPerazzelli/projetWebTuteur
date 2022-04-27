@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Liste des produits{% endblock %}
+
+{% block body %}
+
+<h1> Liste des Status </h1>
+
+<ul>
+    {% for statue in status %}
+    <div class="flex-row">
+        <li>{{ statue.id }} - > {{ statue.name }} - > {{ statue.description }} - > {{ statue.statusType.name }} </li>
+    </div>
+    {% endfor %}
+</ul>
+
+{% endblock %}
