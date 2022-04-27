@@ -124,7 +124,7 @@ class UserController extends AbstractController
 	public function getTutorsWithFilter(EntityManagerInterface $em, $filter): Response
 	{
 		$listTutors = $em->getRepository(User::class)->findBy(array('role' => 3,  'masteredSubject' => $filter));   
-
+        
 		if(empty($listTutors)){
 		
 			$response = new jsonResponse();
