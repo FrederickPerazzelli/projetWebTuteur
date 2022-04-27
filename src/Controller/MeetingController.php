@@ -76,13 +76,40 @@ class MeetingController extends AbstractController
     }
 
     //Renvoie tout les meeting que la personne possède
-    public function myMeetingList(ManagerRegistry $doctrine, $id):Response
+    public function myMeeting(ManagerRegistry $doctrine, $id):Response
     {   
         $meetingList = $this->meetingManager($doctrine)->find($id);
-    
+
         $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
         $json = $serializer->serialize($meetingList, 'json');
         $response = new Response($json);
         return $response;    
+    }
+
+    // Delete une rencontre
+    public function deleteMeeting(ManagerRegistry $doctrine, $id):Response
+    {   
+        $meeting = $this->meetingManager($doctrine)->findOneBy(['id' => $id]);
+        
+        if(empty($meeting)){
+
+            $this->statusManager($doctrine)->remove($meeting);
+
+            $response = new jsonResponse();
+            $response->setContent(json_encode('impossible de supprimer'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+                
+            return $response;
+
+        }
+            $this->statusManager($doctrine)->remove($meeting);
+
+            $response = new jsonResponse();
+            $response->setContent(json_encode('Le status a été supprimer'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+                
+            return $response;
     }
 }

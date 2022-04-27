@@ -140,7 +140,7 @@ class ApiController extends AbstractController
 
 
     // Get toute les info sur un meetings
-    #[Route('/api/meetingId/{id}', name:'api_myMeetingList', methods:'GET')]
+    #[Route('/api/meetingId/{id}', name:'api_MeetingId', methods:'GET')]
     public function meetingWithId(ManagerRegistry $doctrine, Request $request, $id) : Response
     {
         $meetingManager = new MeetingController;
@@ -148,8 +148,14 @@ class ApiController extends AbstractController
         return new Response($meetingList);
     }
 
-
-
+    // Delete un status dans la base de données
+    #[Route('/api/deleteMeeting/{id}', name:'api_deleteMeeting', methods:'DELETE')]
+    public function deleteMeeting(ManagerRegistry $doctrine, $id, Request $request): Response
+    {
+        $meetingController = new MeetingController;
+        $response = $meetingController->deleteMeeting($doctrine, $id);
+        return new Response($response);
+    }
 
 
 
