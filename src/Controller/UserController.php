@@ -92,7 +92,7 @@ class UserController extends AbstractController
 		if(empty($listTutors)){
 		
 			$response = new jsonResponse();
-            $response->setContent(json_encode('Erreur'));
+            $response->setContent(json_encode('Erreur aucun tuteur'));
             $response->headers->set('Content-Type', 'application/json');
             $response->setCharset('UTF-8');
 
@@ -117,7 +117,7 @@ class UserController extends AbstractController
 		if(empty($user)){
 		
 			$response = new jsonResponse();
-            $response->setContent(json_encode('Erreur'));
+            $response->setContent(json_encode('Erreur aucun utilisateur'));
             $response->headers->set('Content-Type', 'application/json');
             $response->setCharset('UTF-8');
 
