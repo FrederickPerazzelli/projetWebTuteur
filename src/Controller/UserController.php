@@ -52,43 +52,45 @@ class UserController extends AbstractController
 
     // Supprime un user
     #[Route('/deleteUser/{id}', name: 'deleteUser')]
-    public function deleteUser(Request $request, EntityManagerInterface $em, $id, $Api = false)
+    public function deleteUser(Request $request, EntityManagerInterface $em, $id)
     {   
-        if(!$Api){
-            $userRepository = $em->getRepository(User::class);
-            $user = $userRepository->find($id);
-            $userRepository->remove($user);
-            $em->flush();
+        $userRepository = $em->getRepository(User::class);
+        $user = $userRepository->find($id);
+        $userRepository->remove($user);
+        $em->flush();
 
-            $session = $request->getsession();
-            $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été supprimé');
-        }else{
+        $session = $request->getsession();
+        $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été supprimé');     
+    }
 
-            $userRepository = $em->getRepository(User::class);
-            $user = $userRepository->find($id);
 
-            if(empty($user)){
-
-                $response = new jsonResponse();
-                $response->setContent(json_encode('Erreur, l\'utilisateur n\'existe pas'));
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setCharset('UTF-8');
-
-                return $response;
-            }
-
-            $userRepository->remove($user);
-            $em->flush();
-
+     // Supprime un user
+     public function deleteUserAPI(Request $request, EntityManagerInterface $em, $id)
+     {    
+        $userRepository = $em->getRepository(User::class);
+        $user = $userRepository->find($id);
+ 
+        if(empty($user)){
+ 
             $response = new jsonResponse();
-            $response->setContent(json_encode('L\'utilisateur a ete surpprimer'));
+            $response->setContent(json_encode('Erreur, l\'utilisateur n\'existe pas'));
             $response->headers->set('Content-Type', 'application/json');
             $response->setCharset('UTF-8');
-
+ 
             return $response;
         }
-        
+ 
+        $userRepository->remove($user);
+        $em->flush();
+ 
+        $response = new jsonResponse();
+        $response->setContent(json_encode('L\'utilisateur a ete surpprimer'));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+ 
+        return $response;        
     }
+
 
     // Active un user
     #[Route('/activateUser/{id}', name: 'activateUser')]

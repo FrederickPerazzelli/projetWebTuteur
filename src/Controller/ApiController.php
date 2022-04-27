@@ -75,7 +75,7 @@ class ApiController extends AbstractController
     public function deleteUser(EntityManagerInterface $em, $id, Request $request) : Response
     {
         $userController = new UserController;
-        $response = $userController->deleteUser($request, $em, $id, true);
+        $response = $userController->deleteUserAPI($request, $em, $id, true);
         return new Response($response);
     }
 
