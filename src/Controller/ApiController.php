@@ -139,6 +139,16 @@ class ApiController extends AbstractController
     }
 
 
+    // Get toute les info sur un meetings
+    #[Route('/api/meetingId/{id}', name:'api_myMeetingList', methods:'GET')]
+    public function meetingWithId(ManagerRegistry $doctrine, Request $request, $id) : Response
+    {
+        $meetingManager = new MeetingController;
+        $meetingList = $meetingManager->meetingId($doctrine, $id);
+        return new Response($meetingList);
+    }
+
+
 
 
 
@@ -159,7 +169,7 @@ class ApiController extends AbstractController
 
     //Route aller chercher la liste des Status
     #[Route('/api/statusList', name: 'api_statusList', methods:'GET')]
-    public function getListStatus(EntityManagerInterface $doctrine, Request $request): Response
+    public function getListStatus(ManagerRegistry $doctrine, Request $request): Response
     {
             $statusController = new StatusController;
             $listStatus = $statusController->listStatus($doctrine, true);       
@@ -173,7 +183,6 @@ class ApiController extends AbstractController
     {   
             $statusController = new StatusController;
             $status = $statusController->status($doctrine, $id, true);       
-            //return json_decode($listStatus, true);
             return new Response($status);
     }
 

@@ -1,0 +1,218 @@
+{% block header %}
+<!--****************************************
+ Fichier : index.html.twig
+ Auteur : Frédérick Perazzelli-Delorme
+ Fonctionnalité : A5
+ Date : 2022-04-21
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ =========================================================
+****************************************-->
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des recontres{% endblock %}
+
+{% block body %}
+    <!--===================== CSS =====================-->
+    <style>
+        table
+        {
+            border-collapse: collapse;
+        }
+        button 
+        {
+            margin: 5px 0px;
+        }
+        a
+        {
+            text-decoration: none;
+        }
+        tr 
+        {
+            border: solid thin;
+        }
+        th 
+        {
+            height: 30pt;
+            background-color: #e34958;
+            color: white;
+        }
+        th, td
+        {
+            text-align: center;
+        }
+        table tr:not([hidden]):nth-child(odd) td
+        {
+            background-color: #d6d6d6;
+        }
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
+        .arrow 
+        {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+        .up 
+        {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .down 
+        {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .flex-row 
+        {
+            display: flex;
+            flex-direction: row;
+        }
+        .flex-column 
+        {
+            display: flex;
+            flex-direction: column;
+        }
+        #searchFilter {
+            width: 100pt;
+        }
+        #userOptions {
+            margin-left: 15pt;
+        }
+    </style>
+
+    <!--===================== HTML =====================-->
+    <h1>Rencontres</h1>
+    <div class="flex-row">
+        <button id="filterButton" class="btn btn-light">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+    </div>
+    <div id="filters" hidden>
+        <div class="flex-row">
+            <div class="flex-column">
+                <b>Actif</b>
+                <div>
+                    <input class="activeFilter" type="checkbox" id="activeFilterTrue" name="activeFilterTrue" value="true"/>
+                    <label for="activeFilterTrue">Actif</label>
+                </div>
+                <div>
+                    <input class="activeFilter" type="checkbox" id="activeFilterFalse" name="activeFilterFalse" value="false"/>
+                    <label for="activeFilterFalse">Inactif</label>
+                </div>
+            </div>
+            <div class="flex-column">
+                <b>Rechercher</b>
+                <input type="text" id="searchFilter" name="searchFilter"/>
+            </div>
+        </div>
+        <button id="applyButton" class="btn btn-primary">Appliquer</button>
+    </div>
+    <table class="displayTable col-15 auto">
+        <tr>
+            <th class="col-1"></th>
+            <th class="col-2">Motive</th>
+            <th class="col-2">Etudiant </th>
+            <th class="col-2">Tuteur </th>
+            <th class="col-2">Date</th>
+            <th class="col-2">Heure</th>
+            <th class="col-2">Location</th>
+            <th class="col-2">Status</th>
+        </tr>
+        {% for meeting in meetings %}
+            <tr class="tableRow">
+                <td><input class="selectUser" type="checkbox" id="select{{ meeting.id }}" name="select{{ meeting.id }}"></td>
+                <td> <a href="/meeting/{{ meeting.id }}" class="Motive"> {{ meeting.motive}} </a> </td> 
+                <td class="student">{{ meeting.student.email }}</td>
+                <td class="tutor">{{ meeting.tutor.email }}</td>
+                <td class="date" >{{ meeting.date|date('Y-m-d') }}</td>
+                <td class="heure">{{ meeting.meetingTime|date('Y-m-d') }}</td>
+                <td class="location">{{ meeting.location }} </td>
+                <td class="Status"> {{ meeting.status.name}} </td>       
+            </tr>
+        {% endfor %}
+    </table>
+
+    <!--===================== JavaScript =====================-->
+    <script async defer>
+        let filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function()
+        {
+            let filterDiv = document.getElementById('filters');
+            let arrow = document.getElementById('filterArrow');
+            arrow.classList.toggle('up');
+            arrow.classList.toggle('down');
+            filterDiv.toggleAttribute('hidden');
+        });
+        let applyButton = document.getElementById('applyButton');
+        applyButton.addEventListener('click', function()
+        {
+            let tableRows = document.getElementsByClassName('tableRow');
+            let roleFilters = document.getElementsByClassName('roleFilter');
+            let activeFilters = document.getElementsByClassName('activeFilter');
+            let searchFilter = document.getElementById('searchFilter').value;
+            let roleArray = [], activeArray = [];
+            // Check for filters selected
+            for (let rf of roleFilters) 
+            {
+                if (rf.checked)
+                    roleArray.push(rf.value);
+            }
+            for (let af of activeFilters) {
+                if (af.checked)
+                    activeArray.push(af.value);
+            }
+            // Apply filters
+            for (let tr of tableRows)
+            {
+                tr.removeAttribute('hidden');
+                if (roleArray.length > 0)
+                {
+                    let role = tr.querySelector('.role').innerHTML;
+                    if (!roleArray.includes(role))
+                        tr.setAttribute('hidden', '');
+                }
+                if (activeArray.length > 0) 
+                {
+                    let active = tr.querySelector('.active');
+                    if (!activeArray.includes(active.checked.toString()))
+                        tr.setAttribute('hidden', '');
+                }
+                if (searchFilter != '') 
+                {
+                    let name = tr.querySelector('.name').innerHTML.toLowerCase();
+                    let email = tr.querySelector('.email').innerHTML.toLowerCase();
+                    if (!name.includes(searchFilter.toLowerCase()) && !email.includes(searchFilter.toLowerCase()))
+                        tr.setAttribute('hidden', '');
+                }
+            }
+        });
+        let checkBoxes = document.getElementsByClassName('selectUser');
+        let options = document.getElementById('userOptions');
+        for (let cb of checkBoxes) 
+        {
+            cb.addEventListener('click', function()
+            {
+                let checked = false;
+                for (let cb of checkBoxes) 
+                {
+                    if (cb.checked)
+                        checked = true;
+                }
+                if (checked)
+                    options.removeAttribute('hidden');
+                else
+                    options.setAttribute('hidden', '');
+            });
+        }
+    </script>
+{% endblock %}
