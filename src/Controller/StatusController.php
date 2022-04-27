@@ -8,10 +8,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\StatusRepository;
 use App\Entity\Status;
+use App\Entity\StatusType;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class StatusController extends AbstractController
 {
@@ -61,6 +66,28 @@ class StatusController extends AbstractController
         }      
     } 
 
+    // Ajouter un status
+    public function addStatus(Request $request, EntityManagerInterface $em): Response
+    {
+        $body = json_decode(
+            $request->getContent(), true
+        );
+
+        $newStatus = new Status;
+
+        $statusType = new StatusType;
+        $statusType = $em->getRepository(StatusType::class)->find($body['statusType']);
+
+        $newStatus->setStatusType($statusType);
+        $newStatus->setName($body['name']);
+        $newStatus->setDescription($body['description']);
+
+        $em->persist($newStatus);
+        $em->flush();
+
+        return new jsonResponse($body);
+    }
+
     // Supprimer un status
     #[Route('/deleteStatus/{id}', name: 'app_deleteStatus')]
     public function deleteStatus(ManagerRegistry $doctrine, $id, $API = false): Response
@@ -90,4 +117,22 @@ class StatusController extends AbstractController
 
     }
 
+
+    // Get Status with filter
+    // Renvoie la liste des tuteurs selon le sujet d'étude
+	//#[Route('/getTutors/{filter}', name:'app_tutorsFilter')]
+	public function getStatusWithFilter(EntityManagerInterface $em, $filter): Response
+	{
+		$listTutors = $em->getRepository(User::class)->findBy(array('role' => 3,  'masteredSubject' => $filter));
+
+        //$listStatus = $em->getRepository(Status::class)->findBy(array('statusType' => $filter));
+        //var_dump($listTutors);
+        //$listTutors = $em->getRepository(User::class)->findAll();   
+        
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($listTutors, 'json');
+        $response = new Response($json);
+        return $response;
+        
+    }
 }
