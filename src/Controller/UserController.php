@@ -31,6 +31,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class UserController extends AbstractController
 {
+    // Imprime la liste des Users
     #[Route('/users', name: 'users')]
     public function listUsers(EntityManagerInterface $em)
     {
@@ -49,18 +50,47 @@ class UserController extends AbstractController
         ]);
     }
 
+    // Supprime un user
     #[Route('/deleteUser/{id}', name: 'deleteUser')]
-    public function deleteUser(Request $request, EntityManagerInterface $em, $id)
-    {
-        $userRepository = $em->getRepository(User::class);
-        $user = $userRepository->find($id);
-        $userRepository->remove($user);
-        $em->flush();
+    public function deleteUser(Request $request, EntityManagerInterface $em, $id, $Api = false)
+    {   
+        if(!$Api){
+            $userRepository = $em->getRepository(User::class);
+            $user = $userRepository->find($id);
+            $userRepository->remove($user);
+            $em->flush();
 
-        $session = $request->getsession();
-        $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été supprimé');
+            $session = $request->getsession();
+            $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été supprimé');
+        }else{
+
+            $userRepository = $em->getRepository(User::class);
+            $user = $userRepository->find($id);
+
+            if(empty($user)){
+
+                $response = new jsonResponse();
+                $response->setContent(json_encode('Erreur, l\'utilisateur n\'existe pas'));
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setCharset('UTF-8');
+
+                return $response;
+            }
+
+            $userRepository->remove($user);
+            $em->flush();
+
+            $response = new jsonResponse();
+            $response->setContent(json_encode('L\'utilisateur a ete surpprimer'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;
+        }
+        
     }
 
+    // Active un user
     #[Route('/activateUser/{id}', name: 'activateUser')]
     public function activateUser(Request $request, EntityManagerInterface $em, $id)
     {
@@ -74,6 +104,7 @@ class UserController extends AbstractController
         $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été activé');
     }
 
+    // Desactive un User
     #[Route('/deactivateUser/{id}', name: 'deactivateUser')]
     public function deactivateUser(Request $request, EntityManagerInterface $em, $id)
     {

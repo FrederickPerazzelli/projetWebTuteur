@@ -11,3 +11,4 @@
 [27-Apr-2022 16:03:03 Europe/Berlin] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 253759488 bytes) in C:\xampp\htdocs\projetWebTuteur\src\Controller\StatusController.php on line 105
 [27-Apr-2022 16:03:09 Europe/Berlin] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 253759488 bytes) in C:\xampp\htdocs\projetWebTuteur\src\Controller\StatusController.php on line 105
 [27-Apr-2022 16:46:50 Europe/Berlin] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 255856640 bytes) in C:\xampp\htdocs\projetWebTuteur\src\Controller\StatusController.php on line 76
+[27-Apr-2022 19:46:59 Europe/Berlin] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 251662336 bytes) in C:\xampp\htdocs\projetWebTuteur\src\Controller\UserController.php on line 98

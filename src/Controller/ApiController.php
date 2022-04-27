@@ -72,10 +72,10 @@ class ApiController extends AbstractController
 
     // Delete un utilisateur dans la base de données via l'API
     #[Route('/api/deleteUser/{id}', name:'api_deleteUser', methods:'DELETE')]
-    public function deleteUser(ManagerRegistry $doctrine, Request $request) : Response
+    public function deleteUser(EntityManagerInterface $em, $id, Request $request) : Response
     {
         $userController = new UserController;
-        // $response = $userController->deleteUser($doctrine, $id, true);
+        $response = $userController->deleteUser($request, $em, $id, true);
         return new Response($response);
     }
 
