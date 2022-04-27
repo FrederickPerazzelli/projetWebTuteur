@@ -74,4 +74,15 @@ class MeetingController extends AbstractController
         }
         
     }
+
+    //Renvoie tout les meeting que la personne possède
+    public function myMeetingList(ManagerRegistry $doctrine, $id):Response
+    {   
+        $meetingList = $this->meetingManager($doctrine)->find($id);
+    
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($meetingList, 'json');
+        $response = new Response($json);
+        return $response;    
+    }
 }

@@ -18,13 +18,6 @@
 
 {% block body %}
     <style>
-        img 
-        {
-            object-fit: cover;
-            width: 175pt;
-            height: 175pt;
-            border: solid 1px;
-        }
         .flex-row
         {
             display: flex;
@@ -89,51 +82,16 @@
         <div class="flex-column col-5">
             <fieldset>
                 <legend>Informations sur la rencontre</legend>
-                {{ form_row(form.motive, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_row(form.student, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_row(form.tutor, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_row(form.date, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_row(form.meetingTime, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_row(form.location, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_row(form.comments, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_row(form.status, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.motive) }}
+                {{ form_row(form.student) }}
+                {{ form_row(form.tutor) }}
+                {{ form_row(form.date)  }}
+                {{ form_row(form.meetingTime) }}
+                {{ form_row(form.location) }}
+                {{ form_row(form.comments) }}
+                {{ form_row(form.status) }}
             </fieldset>
         </div>
     </div>
-    <button id="editButton" type="button" class="btn btn-light">Modifier</button>
-    <div id="editButtons" hidden>
-        <button id="cancelButton" type="button" class="btn btn-danger">Annuler</button>
-        <button type="submit" class="btn btn-primary">Sauvegarder</button>
-    </div>
     {{ form_end(form) }}
-
-
-
-
-
-    <!--===================== JavaScript =====================-->
-    <script>
-        let editButton = document.getElementById('editButton');
-        let inputs = document.querySelectorAll('input, select');
-        let editDiv = document.getElementById('editButtons');
-        editButton.addEventListener('click', function()
-        {
-            for (let input of inputs) 
-            {
-                input.removeAttribute('disabled');
-                editButton.setAttribute('hidden', '');
-                editDiv.removeAttribute('hidden');
-            }
-        });
-        let cancelbutton = document.getElementById('cancelButton');
-        cancelButton.addEventListener('click', function()
-        {
-            for (let input of inputs) 
-            {
-                input.setAttribute('disabled', '');
-                editButton.removeAttribute('hidden');
-                editDiv.setAttribute('hidden', '');
-            }
-        });
-    </script>
 {% endblock %}
