@@ -135,13 +135,9 @@ class StatusController extends AbstractController
 	//#[Route('/getTutors/{filter}', name:'app_tutorsFilter')]
 	public function getStatusWithFilter(EntityManagerInterface $em, $filter): Response
 	{
-		$listTutors = $em->getRepository(User::class)->findBy(array('role' => 3,  'masteredSubject' => $filter));
+		$listStatus = $em->getRepository(User::class)->findBy(array('role' => 3,  'masteredSubject' => $filter));
 
-        //$listStatus = $em->getRepository(Status::class)->findBy(array('statusType' => $filter));
-        //var_dump($listTutors);
-        //$listTutors = $em->getRepository(User::class)->findAll();   
-
-        if(empty($listTutors)){
+        if(empty($listStatus)){
 		
 			$response = new jsonResponse();
             $response->setContent(json_encode('Erreur'));
@@ -153,7 +149,7 @@ class StatusController extends AbstractController
 		}
 		
 		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
-		$json = $serializer->serialize($listTutors, 'json');
+		$json = $serializer->serialize($listStatus, 'json');
 		$response = new Response($json);
 			
 		return $response;

@@ -121,6 +121,34 @@ class ApiController extends AbstractController
 
 
 
+    /***************************************************************************************************
+    *
+    * MEETING
+    * Liste de function API afin de get / ajouter / deleter / modifier un meeting dans la base de données
+    *
+    *****************************************************************************************************/
+
+
+    // Get toute les meeting selon le Id de l'utilisateur
+    #[Route('/api/myMeetingList/{id}', name:'api_myMeetingList', methods:'GET')]
+    public function myMeetingList(ManagerRegistry $doctrine, Request $request, $id) : Response
+    {
+        $meetingManager = new MeetingController;
+        $meetingList = $meetingManager->myMeeting($doctrine, $id);
+        return new Response($meetingList);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     /***************************************************************************************************
     *
