@@ -17,6 +17,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Role;
+use App\Entity\Meeting;
 use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,6 +50,8 @@ class UserController extends AbstractController
     public function getProfile(Request $request, EntityManagerInterface $em, $id): Response
     {
         $user = $em->getRepository(User::class)->find($id);
+        $studentMeetings = $em->getRepository(Meeting::class)->findBy(['student' => $id]);
+        $tutorMeetings = $em->getRepository(Meeting::class)->findBy(['tutor' => $id]);
         $image = $user->getImage();
 
         if ($image)
@@ -72,6 +75,8 @@ class UserController extends AbstractController
         return $this->render('user/profile.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
+            'studentMeetings' => $studentMeetings,
+            'tutorMeetings' => $tutorMeetings,
             'image' => $image
         ]);
     }

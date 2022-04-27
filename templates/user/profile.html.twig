@@ -22,8 +22,8 @@
         img 
         {
             object-fit: cover;
-            width: 150pt;
-            height: 150pt;
+            width: 175pt;
+            height: 175pt;
             border: solid 1px;
         }
         .flex-row
@@ -66,68 +66,58 @@
         {
             height: fit-content;
         }
+        .right
+        {
+            margin-left: auto;
+            margin-right: 0;
+        }
     </style>
     <h1>Profil</h1>
     {{ form_start(form) }}
     <div id="profileForm" class="flex-row wrap">
-        <fieldset class="col-5">
-        <legend>Informations générales</legend>
-            <div class="flex-column input">
-                {{ form_label(form.email) }}
-                {{ form_widget(form.email, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.email) }}
+        <div class="flex-column col-5">
+            <fieldset>
+                <legend>Informations générales</legend>
+                {{ form_row(form.email, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.firstName, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.lastName, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.phone, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.birthdate, { 'attr':{'disabled':'disabled'} }) }}
+            </fieldset>
+            <fieldset>
+                <legend>Informations académiques</legend>
+                {{ form_row(form.institution, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.field, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.masteredSubject, { 'attr':{'disabled':'disabled'} }) }}
+            </fieldset>
+        </div>
+        <div class="flex-column col-5 right">
+            <div class="flex-row wrap">
+                {% if user.image %}
+                    <img class="auto" alt="Image profil" src="data:image/png;base64,{{ image }}"></img>
+                {% else %}
+                    <img class="auto"/>
+                {% endif %}
+                <fieldset class="flex-column col-12 height-fit">
+                    <legend>Compte</legend>
+                    {{ form_row(form.role, { 'attr':{'disabled':'disabled'} }) }}
+                    {{ form_row(form.validAccount, { 'attr':{'disabled':'disabled'} }) }}
+                </fieldset>
             </div>
-            <div class="flex-column input">
-                {{ form_label(form.firstName) }}
-                {{ form_widget(form.firstName, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.firstName) }}
-            </div>
-            <div class="flex-column input">
-                {{ form_label(form.lastName) }}
-                {{ form_widget(form.lastName, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.lastName) }}
-            </div>
-            <div class="flex-column input">
-                {{ form_label(form.phone) }}
-                {{ form_widget(form.phone, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.phone) }}
-            </div>
-            <div class="flex-column input">
-                {{ form_label(form.birthdate) }}
-                {{ form_widget(form.birthdate, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.birthdate) }}
-            </div>
-        </fieldset>
-        <fieldset class="flex-column col-2 height-fit">
-            <legend>Compte</legend>
-            {{ form_label(form.role) }}
-            {{ form_widget(form.role, { 'attr':{'disabled':'disabled'} }) }}
-            {{ form_errors(form.role) }}
-            {{ form_row(form.validAccount, { 'attr':{'disabled':'disabled'} }) }}
-        </fieldset>
-        {% if user.image %}
-            <img alt="Image profil" src="data:image/png;base64,{{ image }}"></img>
-        {% else %}
-            <img/>
-        {% endif %}
-        <fieldset class="col-5">
-            <legend>Informations académiques</legend>
-            <div class="flex-column input">
-                {{ form_label(form.institution) }}
-                {{ form_widget(form.institution, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.institution) }}
-            </div>
-            <div class="flex-column input">
-                {{ form_label(form.field) }}
-                {{ form_widget(form.field, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.field) }}
-            </div>
-            <div class="flex-column input">
-                {{ form_label(form.masteredSubject) }}
-                {{ form_widget(form.masteredSubject, { 'attr':{'disabled':'disabled'} }) }}
-                {{ form_errors(form.masteredSubject) }}
-            </div>
-        </fieldset>
+            <fieldset>
+                <legend>Rencontres</legend>
+                {% for meeting in studentMeetings %}
+                    <p>{{ meeting.date|date('Y-m-d') }} en tant qu'étudiant avec <a href="/profile/{{meeting.tutor.id}}">{{meeting.tutor.firstName}} {{meeting.tutor.lastName}}</a></p>
+                {% endfor %}
+                {% for meeting in tutorMeetings %}
+                    <p>{{ meeting.date|date('Y-m-d') }} en tant que tuteur avec <a href="/profile/{{meeting.student.id}}">{{meeting.student.firstName}} {{meeting.student.lastName}}</a></p>
+                {% endfor %}
+                {% if studentMeetings is empty and tutorMeetings is empty %}
+                    <p>Aucune rencontre</p>
+                {% endif %}
+                
+            </fieldset>
+        </div>
     </div>
     <button id="editButton" type="button">Modifier</button>
     <div id="editButtons" hidden>
