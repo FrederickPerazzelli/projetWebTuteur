@@ -33,10 +33,94 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ApiController extends AbstractController
 {
-    /*****************
+    /***************************************************************************************************
+    *
+    * UTILISATEUR
+    * Liste de function API afin de get / ajouter / deleter / modifier un user dans la base de données
+    *
+    *****************************************************************************************************/
+
+    // Get un les info d'un user dans la base de donnée
+    #[Route('/api/getUser/{id}', name:'api_userId', methods:'GET')]
+    public function getUserWithId(EntityManagerInterface $em, $id, Request $request): Response
+    {
+        $userController = new UserController;
+        $user = $userController->getUserWithId($em, $id);
+        return new Response($user);
+    }
+
+    // Get only tuteur from filter 
+    #[Route('/api/getTutors/{filter}', name:'api_tutorsFilter', methods:'GET')]
+    public function getTutorWithFilter($filter, Request $request): Response
+    {
+        $userController = new UserController;
+        $tutors = $userController->getTutorWithFilter($filter);
+        return new Response($tutors);
+    }
+
+    // Ajoute un utilisateur dans la base données via l'API
+    #[Route('/api/addUser', name:'api_addUser', methods:'POST')]
+    public function addUser(EntityManagerInterface $em, Request $request) : Response
+    {
+        //$userController = new UserController;
+        //$reponse = $userController->addUser($em, $request);
+        
+        $statusController = new StatusController;
+        $reponse = $statusController->addUser($em, $request);
+
+        return new Response($reponse);
+    }
+
+    // Delete un utilisateur dans la base de données via l'API
+    #[Route('/api/deleteUser/{id}', name:'api_deleteUser', methods:'DELETE')]
+    public function deleteUser(ManagerRegistry $doctrine, Request $request) : Response
+    {
+        $userController = new UserController;
+        // $response = $userController->deleteUser($doctrine, $id, true);
+        return new Response($response);
+    }
+
+
+
+
+
+    /***************************************************************************************************
+    *
+    * PLAINTE
+    * Liste de function API afin de get / ajouter / deleter / modifier un user dans la base de données
+    *
+    *****************************************************************************************************/
+
+    // Get la liste des plaintes 
+    #[Route('/api/complaintList', name:'api_complaintList', methods:'GET')]
+    public function getComplaintList(ManagerRegistry $doctrine, Request $request):Response
+    {
+        $complaintController = new ComplaintController;
+        // $complaintList = $complaintController->complaints($doctrine, true);
+        return new Response($complaintList);
+    }
+
+    // Get un complaint en particulier
+    #[Route('/api/complaintFilter', name:'api_getComplaintWithFilter', methods:'GET')]
+    public function getComplaint(ManagerRegistry $doctrine, Request $request, $filter): Response
+    {
+        $complaintController = new ComplaintController;
+        // $complaint = $complaintController->getComplaint($doctrine, $filter, true);
+        return new Response($complaint);
+    }
+
+
+
+
+
+
+
+    /***************************************************************************************************
+    *
     * STATUS
     * Liste de function API afin de get / ajouter / deleter / modifier un status dans la base de données
-    ****************/
+    *
+    *****************************************************************************************************/
 
     //Route aller chercher la liste des Status
     #[Route('/api/statusList', name: 'api_statusList', methods:'GET')]
@@ -84,94 +168,5 @@ class ApiController extends AbstractController
         $status = $statusController->getStatusWithFilter($em, $filter);
         return new Response($status);
     }
-
-
-    /*****************
-    * UTILISATEUR
-    * Liste de function API afin de get / ajouter / deleter / modifier un user dans la base de données
-    ****************/
-
-    // Get la liste de touts les users
-    #[Route('/api/userList', name:'api_userList', methods:('GET'))]
-    public function getUserList(EntityManagerInterface $em, Request $request): Response
-    {
-        $userController = new UserController;
-        $listUser = $userController->users($em, true);       
-        return new Response($listUser);
-    }
-
-    // Get un les info d'un user dans la base de donnée
-    #[Route('/api/getUser/{id}', name:'api_userId', methods:'GET')]
-    public function getUserWithId(EntityManagerInterface $em, $id, Request $request): Response
-    {
-        $userController = new UserController;
-        $user = $userController->getUserWithId($em, $id, true);
-        return new Response($user);
-    }
-
-    // Get only tuteur from filter 
-    #[Route('/api/getTutors/{filter}', name:'api_tutorsFilter', methods:'GET')]
-    public function getTutorWithFilter($filter, Request $request): Response
-    {
-        $userController = new UserController;
-        $tutors = $userController->getTutorWithFilter($filter);
-        return new Response($tutors);
-    }
-
-    // Ajoute un utilisateur dans la base données via l'API
-    #[Route('/api/addUser', name:'api_addUser', methods:'POST')]
-    public function addUser(EntityManagerInterface $em, Request $request) : Response
-    {
-        //$userController = new UserController;
-       // $reponse = $userController->addUser($em, $request);
-        
-        $statusController = new StatusController;
-        $reponse = $statusController->addUser($em, $request);
-
-        return new Response($reponse);
-    }
-
-    // Delete un utilisateur dans la base de données via l'API
-    #[Route('/api/deleteUser/{id}', name:'api_deleteUser', methods:'DELETE')]
-    public function deleteUser(ManagerRegistry $doctrine, Request $request) : Response
-    {
-        $userController = new UserController;
-        // $response = $userController->deleteUser($doctrine, $id, true);
-        return new Response($response);
-    }
-
-    /*****************
-    * PLAINTE
-    * Liste de function API afin de get / ajouter / deleter / modifier un user dans la base de données
-    ****************/
-
-    // Get la liste des plaintes 
-    #[Route('/api/complaintList', name:'api_complaintList', methods:'GET')]
-    public function getComplaintList(ManagerRegistry $doctrine, Request $request):Response
-    {
-        $complaintController = new ComplaintController;
-        // $complaintList = $complaintController->complaints($doctrine, true);
-        return new Response($complaintList);
-    }
-
-    // Get un complaint en particulier
-    #[Route('/api/complaintFilter/{filter}', name:'api_getComplaintWithFilter', methods:'GET')]
-    public function getComplaint(ManagerRegistry $doctrine, Request $request, $filter): Response
-    {
-        $complaintController = new ComplaintController;
-        // $complaint = $complaintController->getComplaint($doctrine, $filter, true);
-        return new Response($complaint);
-    }
-
-    //Delete une complaint 
-    #[Route('/api/deleteComplaint/{id}', name:'api_deleteComplaint', methods:'DELETE')]
-    public function deleteComplaint(ManagerRegistry $doctrine, Request $request):Response
-    {
-        $complainteController = new ComplaintController;
-        // $response = $complaintController->deleteComplaint($doctrine, true);
-        return new Response($response);
-    }
-
-
 
 }

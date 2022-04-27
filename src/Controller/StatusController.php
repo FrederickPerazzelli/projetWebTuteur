@@ -140,11 +140,23 @@ class StatusController extends AbstractController
         //$listStatus = $em->getRepository(Status::class)->findBy(array('statusType' => $filter));
         //var_dump($listTutors);
         //$listTutors = $em->getRepository(User::class)->findAll();   
-        
-        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
-        $json = $serializer->serialize($listTutors, 'json');
-        $response = new Response($json);
-        return $response;
+
+        if(empty($listTutors)){
+		
+			$response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;
+		
+		}
+		
+		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+		$json = $serializer->serialize($listTutors, 'json');
+		$response = new Response($json);
+			
+		return $response;
         
     }
 }
