@@ -24,7 +24,6 @@ header('Content-Type: application/json');
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-//use App\Controller\StatusController;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,10 +50,10 @@ class ApiController extends AbstractController
 
     // Get only tuteur from filter 
     #[Route('/api/getTutors/{filter}', name:'api_tutorsFilter', methods:'GET')]
-    public function getTutorWithFilter($filter, Request $request): Response
+    public function getTutorWithFilter(EntityManagerInterface $em, $filter, Request $request): Response
     {
         $userController = new UserController;
-        $tutors = $userController->getTutorWithFilter($filter);
+        $tutors = $userController->getTutorsWithFilter($em, $filter);
         return new Response($tutors);
     }
 
@@ -112,7 +111,7 @@ class ApiController extends AbstractController
 
     // Get une plainte dans la base de données via l'API
     #[Route('/api/getComplaint/{id}', name:'api_getComplaint', methods:'GET')]
-    public function getComplaintWithId(ManagerRegistry $doctrine, Request $request) : Response
+    public function getComplaintWithId(ManagerRegistry $doctrine, $id, Request $request) : Response
     {
         $complaintController = new ComplaintController;
         $response = $complaintController->getComplaintWithId($doctrine, $id);

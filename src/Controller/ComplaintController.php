@@ -13,7 +13,10 @@
 ****************************************/
 namespace App\Controller;
 
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,7 +70,7 @@ class ComplaintController extends AbstractController
 	public function getComplaintWithId(ManagerRegistry $doctrine, $id): Response
 	{  
 		$complaintManager = $doctrine->getManager()->getRepository(Complaint::class);
-		$complaint = $ComplaintManager($doctrine)->findOneBy(['id' => $id]);
+		$complaint = $complaintManager->findOneBy(['id' => $id]);
 
 		if(empty($complaint)){
 		
