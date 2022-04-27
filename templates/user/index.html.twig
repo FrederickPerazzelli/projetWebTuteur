@@ -108,11 +108,11 @@
     {% endfor %}
     <h1>Utilisateurs</h1>
     <div class="flex-row">
-        <button id="filterButton">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+        <button id="filterButton" class="btn btn-light">Filtrer <i class="arrow down" id="filterArrow"></i></button>
         <div id="userOptions" hidden>
-            <button id="deleteUsers">Supprimer</button>
-            <button id="activateUsers">Activer</button>
-            <button id="deactivateUsers">Désactiver</button>
+            <button id="deleteUsers" class="btn btn-danger">Supprimer</button>
+            <button id="activateUsers" class="btn btn-success">Activer</button>
+            <button id="deactivateUsers" class="btn btn-warning">Désactiver</button>
         </div>
     </div>
     <div id="filters" hidden>
@@ -142,7 +142,7 @@
                 <input type="text" id="searchFilter" name="searchFilter"/>
             </div>
         </div>
-        <button id="applyButton">Appliquer</button>
+        <button id="applyButton" class="btn btn-primary">Appliquer</button>
     </div>
     <table class="displayTable col-12 auto">
         <tr>
