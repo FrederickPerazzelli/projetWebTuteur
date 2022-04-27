@@ -89,4 +89,29 @@ class ComplaintController extends AbstractController
 			
 		return $response;
     }
+
+    // Get all complaint 
+    // Renvoie la liste de toutes les plaintes
+	public function getAllComplaints(ManagerRegistry $doctrine): Response
+	{  
+		$complaintManager = $doctrine->getManager()->getRepository(Complaint::class);
+		$complaint = $complaintManager->findAll();
+
+		if(empty($complaint)){
+		
+			$response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;
+		
+		}
+		
+		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($complaint, 'json');
+        $response = new Response($json);
+			
+		return $response;
+    }
 }

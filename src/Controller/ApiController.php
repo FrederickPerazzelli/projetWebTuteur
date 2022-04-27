@@ -95,7 +95,7 @@ class ApiController extends AbstractController
     public function getComplaintList(ManagerRegistry $doctrine, Request $request):Response
     {
         $complaintController = new ComplaintController;
-        // $complaintList = $complaintController->complaints($doctrine, true);
+        $complaintList = $complaintController->getAllComplaints($doctrine);
         return new Response($complaintList);
     }
 
