@@ -1,20 +1,136 @@
+{% block header %}
+<!--****************************************
+ Fichier : index.html.twig
+ Auteur : Jean-Nyckolas Roy
+ Fonctionnalité : A12
+ Date : 2022-04-27
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ 2022-04-21 - Jean-Nyckolas - Affichage de base et ajout des filtres
+ =========================================================
+****************************************-->
+{% endblock %}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello DemandController!{% endblock %}
+{% block title %}Gestion utilisateurs{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <style>
+        a
+        {
+            text-decoration: none;
+        }
+        .arrow 
+        {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+        .up 
+        {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .down 
+        {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        .flex-row 
+        {
+            display: flex;
+            flex-direction: row;
+        }
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/xampp/htdocs/projetWebTuteur/src/Controller/DemandController.php'|file_link(0) }}">src/Controller/DemandController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/xampp/htdocs/projetWebTuteur/templates/demand/index.html.twig'|file_link(0) }}">templates/demand/index.html.twig</a></code></li>
-    </ul>
-</div>
+        .flex-column 
+        {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .demand
+        {
+            border: solid 1px #d4d4d4;
+            padding: 10pt 10pt;
+        }
+
+        .right
+        {
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        #mainDiv
+        {
+            border-collapse: collapse;
+        }
+    </style>
+    <h1>Demandes</h1>
+    <button id="filterButton" class="btn btn-light">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+    <div id="filters" hidden>
+        <div class="flex-row">
+            <div class="flex-column">
+                <b>Statut</b>
+                {% for state in status %}
+                    <div>
+                        <input class="statusFilter" type="checkbox" id="statusFilter{{ state.id }}" name="statusFilter{{ state.id }}" value="{{ state.name }}"/>
+                        <label for="statusFilter{{ state.id }}">{{ state.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="flex-column">
+                <b>Catégorie</b>
+                {% for c in categories %}
+                    <div>
+                        <input class="categoryFilter" type="checkbox" id="categoryFilter{{ c.id }}" name="categoryFilter{{ c.id }}" value="{{ c.name }}"/>
+                        <label for="categoryFilter{{ c.id }}">{{ c.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="flex-column">
+                <b>Rechercher</b>
+                <input type="text" id="searchFilter" name="searchFilter"/>
+            </div>
+        </div>
+        <button id="applyButton" class="btn btn-primary">Appliquer</button>
+    </div>
+    <div id="mainDiv" class="flex-column">
+        {% for d in demands %}
+            <div class="demand">
+                <div class="flex-row">
+                    <h4>
+                    <a href="demand/{{ d.id }}">{{ d.title }}</a>
+                    {% if d.status.id == 10 %}
+                        <span class="badge bg-success">{{ d.status.name }}</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">{{ d.status.name }}</span>
+                    {% endif %}
+                    </h4>
+                </div>
+                <p>{{ d.comments }}</p>
+                <hr>
+                <div class="flex-row">
+                    <span class="badge rounded-pill bg-primary">{{ d.category.name }}</span>
+                    <span class="right">Écrit par paul le {{ d.publishDate|date('d-m-Y') }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        let filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function()
+        {
+            let filterDiv = document.getElementById('filters');
+            let arrow = document.getElementById('filterArrow');
+
+            arrow.classList.toggle('up');
+            arrow.classList.toggle('down');
+            filterDiv.toggleAttribute('hidden');
+        });
+    </script>
 {% endblock %}
