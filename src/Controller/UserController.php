@@ -70,6 +70,8 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) 
         {
+            if ($user->getPhone())
+                $user->setPhone(preg_replace('/[^0-9]/', '', $user->getPhone()));
             $em->persist($user);
             $em->flush();
 

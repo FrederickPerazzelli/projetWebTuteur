@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class UserType extends AbstractType
 {
@@ -40,7 +41,13 @@ class UserType extends AbstractType
             ])
             ->add('phone', TelType::class, [
                 'label' => 'Téléphone',
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/',
+                        'message' => 'Veuillez respecter le format requis'
+                    ])
+                ]
             ])
             ->add('birthdate', BirthdayType::class, [
                 'label' => 'Date de naissance',
