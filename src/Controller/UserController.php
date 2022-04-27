@@ -10,6 +10,7 @@
  Historique de modifications :
  2022-04-21 - Jean-Nyckolas - Ajout de la route pour la liste d'utilisateurs
  2022-04-26 - Jean-Nyckolas - Ajout des fonction de suppression, activation et désactivation
+ 2022-04-27 - Frédérick Perazzelli-Delorme - Ajout deux fonctions [ getTutorsWithFilter et getUserWithId]
  =========================================================
 ****************************************/
 
@@ -79,5 +80,53 @@ class UserController extends AbstractController
 
         $session = $request->getsession();
         $session->getFlashBag()->add('message', 'L\'utilisateur #' . $id . ' a bien été activé');
+    }
+
+    
+    // Get User with {filter}
+    // Renvoie la liste des tuteurs selon le sujet d'étude
+	public function getTutorsWithFilter(EntityManagerInterface $em, $filter): Response
+	{
+		$listTutors = $em->getRepository(User::class)->findBy(array('role' => 3,  'masteredSubject' => $filter));   
+
+		if(empty($listTutors)){
+		
+			$response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;		
+		}
+		
+		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+		$json = $serializer->serialize($listTutors, 'json');
+		$response = new Response($json);
+			
+		return $response;
+       
+    }
+	
+	// Get User with {id}
+    // Renvoie le profil de quelqu'un selon l'id du user
+	public function getUserWithId(EntityManagerInterface $em, $id): Response
+	{
+		
+		$user = $em->getRepository(User::class)->findOneBy(['id' => $id]);  
+
+		if(empty($user)){
+		
+			$response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;		
+		}	
+		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($user, 'json');
+        $response = new Response($json);
+			
+		return $response;
     }
 }
