@@ -10,7 +10,7 @@
  Historique de modifications :
  2022-04-21 - Jean-Nyckolas - Ajout de la route pour la liste d'utilisateurs
  2022-04-26 - Jean-Nyckolas - Ajout des fonction de suppression, activation et désactivation
- 2022-04-27 - Frédérick Perazzelli-Delorme - Ajout deux fonctions [ getTutorsWithFilter et getUserWithId]
+ 2022-04-27 - Frédérick Perazzelli-Delorme - Ajout deux fonctions [ getTutorsWithFilter() et getUserWithId() ]
  =========================================================
 ****************************************/
 
