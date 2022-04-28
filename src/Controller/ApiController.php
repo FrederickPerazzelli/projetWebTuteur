@@ -57,8 +57,18 @@ class ApiController extends AbstractController
         return new Response($tutors);
     }
 
+    // Get all tutors from database
+    #[Route('/api/getAllTutors', name:'get_allTutors', methods:'GET')]
+    public function getAllTutors(EntityManagerInterface $em, Request $request) : Response
+    {
+        $userController = new UserController;
+        $tutorsList = $userController->getAllTutors($em);
+        return new Response($tutorsList);
+    }
+
+
     // Ajoute un utilisateur dans la base données via l'API
-    #[Route('/api/addUser', name:'api_addUser', methods:'POST')]
+    /*#[Route('/api/addUser', name:'api_addUser', methods:'POST')]
     public function addUser(EntityManagerInterface $em, Request $request) : Response
     {
         //$userController = new UserController;
@@ -68,7 +78,7 @@ class ApiController extends AbstractController
         $reponse = $statusController->addUser($em, $request);
 
         return new Response($reponse);
-    }
+    }*/
 
     // Delete un utilisateur dans la base de données via l'API
     #[Route('/api/deleteUser/{id}', name:'api_deleteUser', methods:'DELETE')]

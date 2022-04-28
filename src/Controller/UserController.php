@@ -207,4 +207,27 @@ class UserController extends AbstractController
 			
 		return $response;
     }
+
+    // Get all tutors
+    // Renvoie la liste de toutes les tuteurs
+	public function getAllTutors(EntityManagerInterface $em): Response
+	{
+		
+		$listTutors = $em->getRepository(User::class)->findBy(array('role' => 3));  
+
+		if(empty($listTutors)){
+		
+			$response = new jsonResponse();
+            $response->setContent(json_encode('Erreur aucun Tuteur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;		
+		}	
+		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($listTutors, 'json');
+        $response = new Response($json);
+			
+		return $response;
+    }
 }
