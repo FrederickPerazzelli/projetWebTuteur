@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Entity\Status;
 use App\Entity\Meeting;
 use App\Form\MeetingType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,6 +27,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\MeetingRepository;
+
+
 
 class MeetingController extends AbstractController
 {
@@ -86,6 +89,65 @@ class MeetingController extends AbstractController
         return $response;    
     }
 
+    // Post rajoute un meeting dans la base de donnée
+    //#[Route('/addMeeting', name:'app_addMeeting')]
+    public function addMeeting(Request $request, EntityManagerInterface $em): Response
+    {
+        $body = json_decode(
+            $request->getContent(), true
+        );
+
+        if(empty($body)){
+            $response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;
+        }
+
+        $newMeeting = new Meeting;
+
+        $newStatus = new Status;
+        $newStatus = $em->getRepository(Status::class)->find($body['status']);
+
+        $newStudent = new User;
+        $newStudent = $em->getRepository(User::class)->find($body['student']);
+
+        $newTutor = new User;
+        $newTutor = $em->getRepository(User::class)->find($body['tutor']);
+
+        $newDate = new \dateTime;
+        $newDate->setDate($body['year'], $body['month'], $body['day']);
+
+        $newTime = new \dateTime;
+        $newTime->setTime($body['hour'], $body['minute'], $body['second']);
+
+        $newMeeting->setDate($newDate);
+        $newMeeting->setMeetingTime($newTime);
+        $newMeeting->setLocation($body['location']);
+        $newMeeting->setComments($body['comments']);
+        $newMeeting->setMotive($body['motive']);
+        $newMeeting->setStatus($newStatus);
+        $newMeeting->setStudent($newStudent);
+        $newMeeting->setTutor($newTutor);
+
+        $em->persist($newMeeting);
+        $em->flush();
+        
+        
+        $response = new jsonResponse($body);
+        $response->setContent(json_encode('Le status a été ajouter'));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+
+        return $response;
+
+    }
+
+
+
+
     // Delete une rencontre
     public function deleteMeeting(ManagerRegistry $doctrine, $id):Response
     {   
@@ -93,7 +155,7 @@ class MeetingController extends AbstractController
         
         if(empty($meeting)){
 
-            $this->statusManager($doctrine)->remove($meeting);
+            $this->meetingManager($doctrine)->remove($meeting);
 
             $response = new jsonResponse();
             $response->setContent(json_encode('impossible de supprimer'));
@@ -103,13 +165,14 @@ class MeetingController extends AbstractController
             return $response;
 
         }
-            $this->statusManager($doctrine)->remove($meeting);
+        
+        $this->meetingManager($doctrine)->remove($meeting);
 
-            $response = new jsonResponse();
-            $response->setContent(json_encode('Le status a été supprimer'));
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setCharset('UTF-8');
+        $response = new jsonResponse();
+        $response->setContent(json_encode('Le status a été supprimer'));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
                 
-            return $response;
+        return $response;
     }
 }

@@ -157,7 +157,14 @@ class ApiController extends AbstractController
         return new Response($response);
     }
 
-
+    // Route pour ajouter une entrée dans la table Meeting
+    #[Route('/api/addMeeting', name:'api_addMeeting', methods:'POST')]
+    public function addMeeting(Request $request, EntityManagerInterface $em): Response
+    {
+        $meetingController = new MeetingController;
+        $response = $meetingController->addMeeting($request, $em); 
+        return new Response($response);
+    }
 
 
 
