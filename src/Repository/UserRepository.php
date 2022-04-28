@@ -62,6 +62,33 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
+
+    public function getTutorsWithFilter($filter){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM user u WHERE u.role_id = 3 AND u.mastered_subject_id = :filter';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['filter' => $filter]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+    public function getAllTutors(){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM user u WHERE u.role_id = 3';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

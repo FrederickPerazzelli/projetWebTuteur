@@ -70,7 +70,7 @@ class ComplaintController extends AbstractController
 	public function getComplaintWithId(ManagerRegistry $doctrine, $id): Response
 	{  
 		$complaintManager = $doctrine->getManager()->getRepository(Complaint::class);
-		$complaint = $complaintManager->findOneBy(['id' => $id]);
+		$complaint = $complaintManager->getComplaintWithId($id);
 
 		if(empty($complaint)){
 		
@@ -95,7 +95,7 @@ class ComplaintController extends AbstractController
 	public function getAllComplaints(ManagerRegistry $doctrine): Response
 	{  
 		$complaintManager = $doctrine->getManager()->getRepository(Complaint::class);
-		$complaint = $complaintManager->findAll();
+		$complaint = $complaintManager->getAllComplaint();
 
 		if(empty($complaint)){
 		
