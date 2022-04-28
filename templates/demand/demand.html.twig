@@ -28,6 +28,7 @@
             width: fit-content;
         }
     </style>
+    {% include 'header.html.twig' %}
     <h1>{{ demand.title }}</h1>
     <span class="badge rounded-pill bg-primary category">{{ demand.category.name }} - {{ demand.subject }}</span>
     <span><b>{{ answers|length }} réponse(s) -</b></span>

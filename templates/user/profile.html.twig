@@ -19,7 +19,7 @@
 
 {% block body %}
     <style>
-        img 
+        .imageProfil
         {
             object-fit: cover;
             width: 175pt;
@@ -61,9 +61,9 @@
         <div class="flex-column col-5 right">
             <div class="flex-row wrap">
                 {% if user.image %}
-                    <img class="auto" alt="Image profil" src="data:image/png;base64,{{ image }}"></img>
+                    <img class="auto imageProfil" alt="Image profil" src="data:image/png;base64,{{ image }}"></img>
                 {% else %}
-                    <img class="auto"/>
+                    <img class="auto imageProfil"/>
                 {% endif %}
                 <fieldset class="flex-column col-12 height-fit">
                     <legend>Compte</legend>
