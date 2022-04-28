@@ -117,11 +117,11 @@ class MeetingController extends AbstractController
         $newTutor = new User;
         $newTutor = $em->getRepository(User::class)->find($body['tutor']);
 
-        $newDate = new \dateTime;
-        $newDate->setDate($body['year'], $body['month'], $body['day']);
+        $newDate = new \dateTime($body['date']);
+        //newDate->setDate($body['year'], $body['month'], $body['day']);
 
-        $newTime = new \dateTime;
-        $newTime->setTime($body['hour'], $body['minute'], $body['second']);
+        $newTime = new \dateTime($body['time']);
+        //$newTime->setTime($body['hour'], $body['minute'], $body['second']);
 
         $newMeeting->setDate($newDate);
         $newMeeting->setMeetingTime($newTime);
