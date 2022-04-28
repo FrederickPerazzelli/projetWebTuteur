@@ -51,11 +51,11 @@ class ComplaintController extends AbstractController
     {
 
     }
-    #[Route('complaint/changestatus', name: 'changeStatus')] 
-    public function changeStatus()
+    #[Route('complaint/changestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
+    public function changeStatus($statusId, $complaintId)
     {
-        $info = var_dump($_POST);
-        return $info;
+
+        return 200;
     }
 
 }

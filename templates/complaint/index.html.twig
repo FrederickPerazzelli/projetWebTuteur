@@ -63,13 +63,14 @@
             {
                 statusId = event.target.value;
                 complaintId = event.target.selectedOptions[0].dataset.id;
-                body = {"statusId": statusId, "complaintId": complaintId}
-                let request = new XMLHttpRequest();
-                request.open("POST", "complaint/changestatus");
-                request.send(body);
-                request.onload= () => {
-                    console.log(JSON.parse(request.response));
+
+                let response = await fetch('/complaint/changestatus/'+statusId+'/'+complaintId);
+            
+                if (response.status === 200) {
+                    let data = await response.text();
+                    console.log('Successfully changed status');
                 }
+                
 
 
             }
