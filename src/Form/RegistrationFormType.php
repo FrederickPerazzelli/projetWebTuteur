@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $builder): void
     {
         $builder
 
@@ -30,7 +30,10 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Veuillez entrer votre prenom',
                     ]),
-                    new Regex('/^([A-Z][a-z]+)(-[A-Z][a-z]+)*$/')
+                    new Regex([
+                        'pattern' =>'/^([A-Z][a-z]+)(-[A-Z][a-z]+)*$/',
+                        'message' => 'Le prenom doit être comme suit: Manuel'
+                        ])
                 ]
             ])
 
@@ -40,7 +43,10 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Veuillez entrer votre nom',
                     ]),
-                    new Regex('/^([A-Z][a-z]+)(-[A-Z][a-z]+)*$/')
+                    new Regex([
+                        'pattern' =>'/^([A-Z][a-z]+)(-[A-Z][a-z]+)*$/',
+                        'message' => 'Le nom de famille doit être comme suit: Turcotte'
+                        ])
                 ]
             ])
 
@@ -50,7 +56,10 @@ class RegistrationFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Veuillez entrez votre adresse courriel',
                     ]),
-                    new Regex('/^((([a-z0-9._-]+)@([a-z0-9._-]+)\.([a-z]{2,6}))|(([a-z0-9._-]+)@\[(([\d]){1,3}\.){3}[\d]{1,3}\]))$/')
+                    new Regex([
+                        'pattern' => '/^((([a-z0-9._-]+)@([a-z0-9._-]+)\.([a-z]{2,6}))|(([a-z0-9._-]+)@\[(([\d]){1,3}\.){3}[\d]{1,3}\]))$/',
+                        'message' => 'Le email doit être comme suit: bidon@bidon.com'
+                        ])
                 ]
             ])
 
@@ -68,7 +77,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Regex([
                         'pattern' => '/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/',
-                        'message' => 'allo'
+                        'message' => 'Le numéro de téléphone doit être comme suit: 999-999-9999 '
                     ]),
                 ]
             ])
@@ -81,7 +90,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Veuillez entrer un mot de passe',
                     ]),
                     new Length([
                         'min' => 6,
@@ -89,7 +98,10 @@ class RegistrationFormType extends AbstractType
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
-                    new Regex('/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%&*()\/\\]).+$/')
+                    new Regex([
+                        'pattern' => '/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#?$%&*()\/\\\\])/',
+                        'message' => 'Votre mot de passe doit contenire une majuscule, une minuscule, un chiffre et un caractère special'
+                        ])
                 ],
                 
             ])
