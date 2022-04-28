@@ -17,14 +17,12 @@ class DemandController extends AbstractController
     public function getDemands(EntityManagerInterface $em): Response
     {
         $demands = $em->getRepository(Demand::class)->findAll();
-        $answers = $em->getRepository(Answer::class)->findAll();
         $categories = $em->getRepository(Category::class)->findAll();
         $status = $em->getRepository(Status::class)->findBy(['statusType' => 3]);
 
         return $this->render('demand/index.html.twig', [
             'controller_name' => 'DemandController',
             'demands' => $demands,
-            'answers' => $answers,
             'status' => $status,
             'categories' => $categories
         ]);
