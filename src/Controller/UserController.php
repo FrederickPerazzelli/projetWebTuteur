@@ -214,7 +214,7 @@ class UserController extends AbstractController
 	public function getAllTutors(EntityManagerInterface $em): Response
 	{
 		
-		$listTutors = $em->getRepository(User::class)->findBy(array('role' => 3));  
+		$listTutors = $em->getRepository(User::class)->getAllTutors();  
 
 		if(empty($listTutors)){
 		
