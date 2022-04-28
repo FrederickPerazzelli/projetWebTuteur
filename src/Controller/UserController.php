@@ -18,11 +18,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Role;
+use App\Entity\Meeting;
+use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
@@ -47,6 +50,43 @@ class UserController extends AbstractController
             'controller_name' => 'UserController',
             'userList' => $users,
             'roles' => $roles
+        ]);
+    }
+
+    #[Route('/profile/{id}', name: 'profile')]
+    public function getProfile(Request $request, EntityManagerInterface $em, $id): Response
+    {
+        $user = $em->getRepository(User::class)->find($id);
+        $studentMeetings = $em->getRepository(Meeting::class)->findBy(['student' => $id]);
+        $tutorMeetings = $em->getRepository(Meeting::class)->findBy(['tutor' => $id]);
+        $image = $user->getImage();
+
+        if ($image)
+            $image = base64_encode(stream_get_contents($image));
+
+        $form = $this->createForm(UserType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            if ($user->getPhone())
+                $user->setPhone(preg_replace('/[^0-9]/', '', $user->getPhone()));
+            $em->persist($user);
+            $em->flush();
+
+            $session = $request->getSession();
+            $session->getFlashBag()->add('message', 'Le profil #' . $id . ' a bien été modifié');
+
+            return $this->redirect($this->generateUrl('users'));
+        }
+
+        return $this->render('user/profile.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+            'studentMeetings' => $studentMeetings,
+            'tutorMeetings' => $tutorMeetings,
+            'image' => $image
         ]);
     }
 

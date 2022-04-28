@@ -103,11 +103,10 @@
     <!--===================== HTML =====================-->
     <h1>Utilisateurs</h1>
     <div class="flex-row">
-        <button id="filterButton">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+        <button id="filterButton" class="btn btn-light">Filtrer <i class="arrow down" id="filterArrow"></i></button>
         <div id="userOptions" hidden>
-            <button id="deleteUsers">Supprimer</button>
-            <button id="activateUsers">Activer</button>
-            <button id="deactivateUsers">Désactiver</button>
+            <button id="activateUsers" class="btn btn-success">Activer</button>
+            <button id="deactivateUsers" class="btn btn-danger">Désactiver</button>
         </div>
     </div>
     <div id="filters" hidden>
@@ -137,7 +136,7 @@
                 <input type="text" id="searchFilter" name="searchFilter"/>
             </div>
         </div>
-        <button id="applyButton">Appliquer</button>
+        <button id="applyButton" class="btn btn-primary">Appliquer</button>
     </div>
     <table class="displayTable col-12 auto">
         <tr>
@@ -238,6 +237,7 @@
         });
 
         let checkBoxes = document.getElementsByClassName('selectUser');
+        let options = document.getElementById('userOptions');
         for (let cb of checkBoxes) 
         {
             cb.addEventListener('click', function()
@@ -249,31 +249,12 @@
                         checked = true;
                 }
 
-                let options = document.getElementById('userOptions');
-
                 if (checked)
                     options.removeAttribute('hidden');
                 else
                     options.setAttribute('hidden', '');
             });
         }
-
-        let deleteButton = document.getElementById('deleteUsers');
-        deleteButton.addEventListener('click', function()
-        {
-            if (confirm('Voulez-vous supprimer les utilisateurs sélectionnés?'))
-            {
-                for (let cb of checkBoxes) 
-                {
-                    if (cb.checked)
-                    {
-                        window.location.href = "deleteUser/"+cb.value;
-                    }
-                }
-
-                window.location.href = 'users';
-            }
-        });
 
         let activateButton = document.getElementById('activateUsers');
         activateButton.addEventListener('click', function()
@@ -284,11 +265,14 @@
                 {
                     if (cb.checked)
                     {
-                        window.location.href = "activateUser/"+cb.value;
+                        activateUser(cb.value);
+                        cb.checked = false;
+                        let activeCb = cb.parentElement.parentElement.querySelector('td input.active');
+                        activeCb.checked = true;
                     }
                 }
 
-                window.location.href = 'users';
+                options.setAttribute('hidden', '');
             }
         });
 
@@ -301,12 +285,34 @@
                 {
                     if (cb.checked)
                     {
-                        window.location.href = "deactivateUser/"+cb.value;
+                        deactivateUser(cb.value);
+                        cb.checked = false;
+                        let activeCb = cb.parentElement.parentElement.querySelector('td input.active');
+                        activeCb.checked = false;
                     }
                 }
 
-                window.location.href = 'users';
+                options.setAttribute('hidden', '');
             }
         });
+
+        /***** Requêtes AJAX *****/
+        async function activateUser(id) {
+            let response = await fetch('/activateUser/'+id);
+            
+            if (response.status === 200) {
+                let data = await response.text();
+                console.log('Activation success');
+            }
+        }
+
+        async function deactivateUser(id) {
+            let response = await fetch('/deactivateUser/'+id);
+            
+            if (response.status === 200) {
+                let data = await response.text();
+                console.log('Deactivation success');
+            }
+        }
     </script>
 {% endblock %}
