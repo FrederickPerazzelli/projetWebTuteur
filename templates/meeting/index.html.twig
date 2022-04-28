@@ -103,15 +103,15 @@
             <div class="flex-column">
                 <b>Status</b>
                 <div>
-                    <input class="statusFilter" type="checkbox" id="statusFilterTrue" name="statusFilterTrue" value="true"/>
+                    <input class="statusFilter" type="checkbox" id="statusFilterTrue" name="statusFilterTrue" value="Accepté"/>
                     <label for="statusFilterTrue">Accepté</label>
                 </div>
                 <div>
-                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="false"/>
+                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="Refusé"/>
                     <label for="statusFilterFalse">Refusé</label>
                 </div>
                 <div>
-                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="false"/>
+                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="En attente"/>
                     <label for="statusFilterFalse">En attente</label>
                 </div>
             </div>
@@ -138,7 +138,7 @@
                 <td class="date" >{{ meeting.date|date('Y-m-d') }}</td>
                 <td class="heure">{{ meeting.meetingTime|date('Y-m-d') }}</td>
                 <td class="location">{{ meeting.location }} </td>
-                <td class="status"> {{ meeting.status.name}} </td>       
+                <td class="status">{{ meeting.status.name}}</td>       
             </tr>
         {% endfor %}
     </table>
@@ -169,13 +169,13 @@
                     statusArray.push(af.value);
             }
             // Apply filters
-            tr.removeAttribute('hidden');
             for (let tr of tableRows)
             {
+                tr.removeAttribute('hidden');
                 if (statusArray.length > 0) 
                 {
                     let status = tr.querySelector('.status');
-                    if (!statusArray.includes(status.checked.toString()))
+                    if (!statusArray.includes(status.innerHTML))
                         tr.setAttribute('hidden', '');
                 }
             }
