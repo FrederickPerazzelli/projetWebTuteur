@@ -24,8 +24,9 @@
                     <select class='statusSelect'>
                         {% for status in statusList%}
                             {% if status.statustype.name == 'complaint' %}
-                                <option id="status_{{status.id|number_format}}" 
-                                    data-id= {{ complaint.id }}
+                                <option
+                                    data-complaintId= {{ complaint.id }}
+                                    data-statusId = {{status.id}}
                                 {% if status.id == complaint.status.id %} 
                                     selected="selected"
                                 {% endif %}
@@ -59,12 +60,13 @@
             for(var i = 0; i < statusSelect.length; i++) {
                 statusSelect[i].addEventListener("change", statusUpdate);
             }
-            function statusUpdate(event)
+            async function statusUpdate(event)
             {
-                statusId = event.target.value;
-                complaintId = event.target.selectedOptions[0].dataset.id;
+                console.log(event)
+                statusId = event.target.selectedOptions[0].dataset.statusId;
+                complaintId = event.target.selectedOptions[0].dataset.complaintId;
 
-                let response = await fetch('/complaint/changestatus/'+statusId+'/'+complaintId);
+                let response = await fetch('/changestatus/'+statusId+'/'+complaintId);
             
                 if (response.status === 200) {
                     let data = await response.text();

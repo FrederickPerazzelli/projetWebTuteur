@@ -51,7 +51,7 @@ class ComplaintController extends AbstractController
     {
 
     }
-    #[Route('complaint/changestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
+    #[Route('/changestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
     public function changeStatus($statusId, $complaintId)
     {
 
