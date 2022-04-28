@@ -3,8 +3,8 @@
 {% block title %}Hello ComplaintController!{% endblock %}
 
 {% block body %}
-<div class="listePlainte">
-    <table>
+<div class="ComplaintList">
+    <table >
         <tr>                
             <th> Id </th>
             <th> Utilisateur </th>
@@ -16,31 +16,66 @@
         </tr>
         {% for complaint in complaints%}
             <tr>                
-                <td> {{complaint.ComplaintId}}</td>
-                <td> {{complaint.userName}}</td>
+                <td > {{complaint.id}}</td>
+                <td> {{complaint.user.firstName }} {{complaint.user.lastName }}</td>
                 <td> {{complaint.description}}</td>
-                <td> {{complaint.date|date("m/d/Y") }}</td>
+                <td> {{complaint.complaintDate|date("m/d/Y") }}</td>
                 <td> 
-                    <select>
+                    <select class='statusSelect'>
                         {% for status in statusList%}
-                            {% if status.type%}
-                            <option id="etat_{{status.id|number_format}}" 
-
-                            {% if status.id == complaint.statusId%} 
-                                selected="selected"
+                            {% if status.statustype.name == 'complaint' %}
+                                <option id="status_{{status.id|number_format}}" 
+                                    data-id= {{ complaint.id }}
+                                {% if status.id == complaint.status.id %} 
+                                    selected="selected"
+                                {% endif %}
+                                >
+                                    {{status.name}}
+                                </option>
                             {% endif %}
-
-                            >
-                                {{status.name}}
-                            </option>
                         {% endfor %}
                     </select>
                 </td>
                
-                <td> {{complaint.adminId}}</td>
-
+                <td> 
+                    {{complaint.admin.Id|default('<Your default value here>') }}
+                </td>
+                <td>
+                    <button> Supprimer </button>
+                </td>
             </tr>
         {% endfor %}
     </table>
 </div>
+{% endblock %}
+
+
+{% block javascripts %} 
+
+    <script type="text/javascript" defer>
+        window.onload = function()
+        {
+            var statusSelect = document.getElementsByClassName('statusSelect');
+            for(var i = 0; i < statusSelect.length; i++) {
+                statusSelect[i].addEventListener("change", statusUpdate);
+            }
+            function statusUpdate(event)
+            {
+                statusId = event.target.value;
+                complaintId = event.target.selectedOptions[0].dataset.id;
+                body = {"statusId": statusId, "complaintId": complaintId}
+                let request = new XMLHttpRequest();
+                request.open("POST", "complaint/changestatus");
+                request.send(body);
+                request.onload= () => {
+                    console.log(JSON.parse(request.response));
+                }
+
+
+            }
+
+        } 
+      
+    </script>
+
 {% endblock %}
