@@ -15,3 +15,36 @@
 {
     margin: auto;
 }
+
+.flex-row
+{
+    display: flex;
+    flex-direction: row;
+}
+.flex-column
+{
+    display: flex;
+    flex-direction: column;
+}
+.wrap
+{
+    flex-wrap: wrap;
+}
+
+.input
+{
+    margin: 5pt 0pt;
+}
+.height-fit
+{
+    height: fit-content;
+}
+.height-fill
+{
+    height: fit-content;
+}
+.right
+{
+    margin-left: auto;
+    margin-right: 0;
+}

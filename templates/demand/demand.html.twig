@@ -1,0 +1,108 @@
+{% block header %}
+<!--****************************************
+ Fichier : index.html.twig
+ Auteur : Jean-Nyckolas Roy
+ Fonctionnalité : A12
+ Date : 2022-04-27
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ 2022-04-27 - Jean-Nyckolas - Affichage de base et ajout des filtres
+ =========================================================
+****************************************-->
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Demande{% endblock %}
+
+{% block body %}
+    <style>
+        a
+        {
+            text-decoration: none;
+        }
+        button
+        {
+            width: fit-content;
+        }
+    </style>
+    <h1>{{ demand.title }}</h1>
+    <span class="badge rounded-pill bg-primary category">{{ demand.category.name }} - {{ demand.subject }}</span>
+    <span><b>{{ answers|length }} réponse(s) -</b></span>
+    <span class="right">Écrit par paul le {{ demand.publishDate|date('d-m-Y') }}</span>
+    <hr>
+    <div class="flex-row">
+        <div class="flex-column col-6">
+            {{ demand.comments }}
+            <hr>
+            {% for a in answers %}
+                <p>
+                    <!-- Modifier pour vérifier le rôle de l'utilisateur -->
+                    {{ a.comments }} - 
+                    {% if true %}
+                        <a href="/profile/{{ a.user.id }}">{{ a.user.firstName }} {{ a.user.lastName }}</a>
+                    {% else %}
+                        {{ a.user.firstName }} {{ a.user.lastName }}
+                    {% endif %}
+                    <span class="form-text">{{ a.answerDate|date('Y-m-d') }}</span>
+                </p>
+                <hr>
+            {% endfor %}
+            <textarea id="commentArea" class="form-control" hidden></textarea>
+            <div id="commentDiv" class="flex-row" hidden>
+                <button id="cancelButton" type="button" class="btn btn-link">Annuler</button>
+                <button id="sendButton" type="button" class="btn btn-link">Envoyer</button>
+            </div>
+            <button id="commentButton" type="button" class="btn btn-link">Ajouter un commentaire</button>
+        </div>
+        <fieldset class="col-4 right">
+            <legend>Autres demandes en {{ demand.category.name }}</legend>
+            {% for suggestion in sameSubject|filter(suggestion => suggestion.id != demand.id) %}
+                <a href="/demand/{{ suggestion.id }}">{{ suggestion.title }}</a>
+            {% endfor %}
+        </fieldset>
+    </div>
+    <script>
+        let commentArea = document.getElementById('commentArea');
+        let commentDiv = document.getElementById('commentDiv');
+        let cancelButton = document.getElementById('cancelButton');
+        let sendButton = document.getElementById('sendButton');
+        let commentButton = document.getElementById('commentButton');
+
+        cancelButton.addEventListener('click', function()
+        {
+            commentDiv.setAttribute('hidden', '');
+            commentArea.value = '';
+            commentButton.removeAttribute('hidden');
+            commentArea.setAttribute('hidden', '');
+        });
+
+        commentButton.addEventListener('click', function()
+        {
+            commentButton.setAttribute('hidden', '');
+            commentArea.removeAttribute('hidden');
+            commentDiv.removeAttribute('hidden');
+        });
+
+        sendButton.addEventListener('click', function()
+        {
+            if (commentArea.value != '') 
+            {
+                addComment({{ demand.id }}, 1, commentArea.value);
+            }
+        });
+
+        /***** Requêtes AJAX *****/
+        async function addComment(demand, user, comments) 
+        {
+            let response = await fetch('/addComment/'+demand+'/'+user+'/'+comments);
+            
+            if (response.status === 200) {
+                let data = await response.text();
+                console.log('Successfully commented');
+            }
+        }
+    </script>
+{% endblock %}

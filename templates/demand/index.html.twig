@@ -8,14 +8,14 @@
  Date Nom Approuvé
  =========================================================
  Historique de modifications :
- 2022-04-21 - Jean-Nyckolas - Affichage de base et ajout des filtres
+ 2022-04-27 - Jean-Nyckolas - Affichage de base et ajout des filtres
  =========================================================
 ****************************************-->
 {% endblock %}
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion utilisateurs{% endblock %}
+{% block title %}Demandes d'aide{% endblock %}
 
 {% block body %}
     <style>
@@ -41,28 +41,10 @@
             -webkit-transform: rotate(45deg);
         }
 
-        .flex-row 
-        {
-            display: flex;
-            flex-direction: row;
-        }
-
-        .flex-column 
-        {
-            display: flex;
-            flex-direction: column;
-        }
-
         .demand
         {
             border: solid 1px #d4d4d4;
             padding: 10pt 10pt;
-        }
-
-        .right
-        {
-            margin-left: auto;
-            margin-right: 0;
         }
 
         #mainDiv

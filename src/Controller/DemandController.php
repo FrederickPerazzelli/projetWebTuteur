@@ -27,4 +27,19 @@ class DemandController extends AbstractController
             'categories' => $categories
         ]);
     }
+
+    #[Route('/demand/{id}', name: 'demand')]
+    public function getDemand(EntityManagerInterface $em, $id): Response
+    {
+        $demand = $em->getRepository(Demand::class)->find($id);
+        $sameSubject = $em->getRepository(Demand::class)->findBy(['category' => $demand->getCategory()]);
+        $answers = $em->getRepository(Answer::class)->findBy(['demand' => $id]);
+
+        return $this->render('demand/demand.html.twig', [
+            'controller_name' => 'DemandController',
+            'demand' => $demand,
+            'sameSubject' => $sameSubject,
+            'answers' => $answers
+        ]);
+    }
 }
