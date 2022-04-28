@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Role;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
+use App\Repository\RoleRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use App\Security\AuthUserAuthenticator;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +24,10 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
+    private function roleManager(ManagerRegistry $doctrine) : RoleRepository {
+        return $doctrine->getManager()->getRepository(Role::class);
+    }
+
     private EmailVerifier $emailVerifier;
 
     public function __construct(EmailVerifier $emailVerifier)
@@ -29,7 +36,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AuthUserAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AuthUserAuthenticator $authenticator, EntityManagerInterface $entityManager, ManagerRegistry $doctrine): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -43,6 +50,14 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            $user->setRoles(['ROLE_ADMIN']);
+
+            $role = $this->roleManager($doctrine)->find(1);
+            $user->setRole($role);
+            $user->setValidAccount(0);
+
+            $today = new \DateTime('now');
+            $user->setRegisteredDate($today);
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -52,7 +67,7 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('projetwebtuteur@gmail.com', 'projet'))
                     ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Veuillez valider votre courriel')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
@@ -94,7 +109,7 @@ class RegistrationController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Votre courriel a bien été confirmer.');
 
         return $this->redirectToRoute('app_register');
     }
