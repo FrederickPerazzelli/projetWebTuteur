@@ -136,7 +136,7 @@
                 <td class="student">{{ meeting.student.email }}</td>
                 <td class="tutor">{{ meeting.tutor.email }}</td>
                 <td class="date" >{{ meeting.date|date('Y-m-d') }}</td>
-                <td class="heure">{{ meeting.meetingTime|date('Y-m-d') }}</td>
+                <td class="heure">{{ meeting.meetingTime|date('h:i:sa') }}</td>
                 <td class="location">{{ meeting.location }} </td>
                 <td class="status">{{ meeting.status.name}}</td>       
             </tr>
