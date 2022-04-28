@@ -78,9 +78,9 @@
     </style>
 
     {% include 'header.html.twig' %}
-    <h1>Rencontre</h1>
+    <h1 class="flex-row wrap justify-content-center">Rencontre</h1>
     {{ form_start(form) }}
-    <div id="profileForm" class="flex-row wrap">
+    <div class="flex-row wrap justify-content-center">
         <div class="flex-column col-5">
             <fieldset>
                 <legend>Informations sur la rencontre</legend>
@@ -96,4 +96,5 @@
         </div>
     </div>
     {{ form_end(form) }}
+    {% include 'footer.html.twig' %}
 {% endblock %}
