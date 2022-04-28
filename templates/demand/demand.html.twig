@@ -18,6 +18,9 @@
 {% block title %}Demande{% endblock %}
 
 {% block body %}
+    {% if not app.user or app.user.role.id not in [1, 3] %}
+        <script>window.location.href = "/login";</script>
+    {% endif %}
     <style>
         img 
         {

@@ -7,11 +7,13 @@
 
     <a class="navbar-brand" href="#"><img src="{{ asset('icon.png') }}" alt="" width="30" height="24" class="d-inline-block align-text-top"></a>
     <a class="navbar-brand" href="{{ path('app_home') }}"> Accueil </a>
-    <a class="navbar-brand" href="{{ path('users') }}"> Utilisateurs </a>
-    <a class="navbar-brand" href="{{ path('app_meeting') }}"> Rencontres </a>
-    <a class="navbar-brand" href="{{ path('demands') }}"> Demandes d'aide </a>
 
     {% if app.user %}
+    {% if app.user.role.id == 1 %}
+    <a class="navbar-brand" href="{{ path('users') }}"> Utilisateurs </a>
+    <a class="navbar-brand" href="{{ path('app_meeting') }}"> Rencontres </a>
+    {% endif %}
+    <a class="navbar-brand" href="{{ path('demands') }}"> Demandes d'aide </a>
     <a  class="navbar-brand" href="{{ path('app_logout') }}"> Déconnexion </a>
     {% else %}
     <a class="navbar-brand" href="{{ path('app_login') }}"> Connexion </a>

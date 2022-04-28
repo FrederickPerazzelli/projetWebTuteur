@@ -3,6 +3,9 @@
 {% block title %}Hello ComplaintController!{% endblock %}
 
 {% block body %}
+{% if not app.user or app.user.role.id != 1 %}
+    <script>window.location.href = "/login";</script>
+{% endif %}
 {% include 'header.html.twig' %}
 <div class="listePlainte">
     <table>

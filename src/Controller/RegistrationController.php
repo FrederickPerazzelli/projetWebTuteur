@@ -22,7 +22,6 @@ use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
-
 class RegistrationController extends AbstractController
 {
     private function roleManager(ManagerRegistry $doctrine) : RoleRepository {
