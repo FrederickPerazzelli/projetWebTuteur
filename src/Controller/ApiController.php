@@ -120,6 +120,57 @@ class ApiController extends AbstractController
 
 
 
+    /***************************************************************************************************
+    *
+    * MEETING
+    * Liste de function API afin de get / ajouter / deleter / modifier un meeting dans la base de données
+    *
+    *****************************************************************************************************/
+
+
+    // Get toute les meeting selon le Id de l'utilisateur
+    #[Route('/api/myMeetingList/{id}', name:'api_myMeetingList', methods:'GET')]
+    public function myMeetingList(ManagerRegistry $doctrine, Request $request, $id) : Response
+    {
+        $meetingManager = new MeetingController;
+        $meetingList = $meetingManager->myMeeting($doctrine, $id);
+        return new Response($meetingList);
+    }
+
+
+    // Get toute les info sur un meetings
+    #[Route('/api/meetingId/{id}', name:'api_MeetingId', methods:'GET')]
+    public function meetingWithId(ManagerRegistry $doctrine, Request $request, $id) : Response
+    {
+        $meetingManager = new MeetingController;
+        $meetingList = $meetingManager->meetingId($doctrine, $id, true);
+        return new Response($meetingList);
+    }
+
+    // Delete un status dans la base de données
+    #[Route('/api/deleteMeeting/{id}', name:'api_deleteMeeting', methods:'DELETE')]
+    public function deleteMeeting(ManagerRegistry $doctrine, $id, Request $request): Response
+    {
+        $meetingController = new MeetingController;
+        $response = $meetingController->deleteMeeting($doctrine, $id);
+        return new Response($response);
+    }
+
+    // Route pour ajouter une entrée dans la table Meeting
+    #[Route('/api/addMeeting', name:'api_addMeeting', methods:'POST')]
+    public function addMeeting(Request $request, EntityManagerInterface $em): Response
+    {
+        $meetingController = new MeetingController;
+        $response = $meetingController->addMeeting($request, $em); 
+        return new Response($response);
+    }
+
+
+
+
+
+
+
 
     /***************************************************************************************************
     *
@@ -130,7 +181,7 @@ class ApiController extends AbstractController
 
     //Route aller chercher la liste des Status
     #[Route('/api/statusList', name: 'api_statusList', methods:'GET')]
-    public function getListStatus(EntityManagerInterface $doctrine, Request $request): Response
+    public function getListStatus(ManagerRegistry $doctrine, Request $request): Response
     {
             $statusController = new StatusController;
             $listStatus = $statusController->listStatus($doctrine, true);       
@@ -144,7 +195,6 @@ class ApiController extends AbstractController
     {   
             $statusController = new StatusController;
             $status = $statusController->status($doctrine, $id, true);       
-            //return json_decode($listStatus, true);
             return new Response($status);
     }
 
