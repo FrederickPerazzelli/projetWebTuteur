@@ -101,19 +101,19 @@
     <div id="filters" hidden>
         <div class="flex-row">
             <div class="flex-column">
-                <b>Actif</b>
+                <b>Status</b>
                 <div>
-                    <input class="activeFilter" type="checkbox" id="activeFilterTrue" name="activeFilterTrue" value="true"/>
-                    <label for="activeFilterTrue">Actif</label>
+                    <input class="statusFilter" type="checkbox" id="statusFilterTrue" name="statusFilterTrue" value="Accepté"/>
+                    <label for="statusFilterTrue">Accepté</label>
                 </div>
                 <div>
-                    <input class="activeFilter" type="checkbox" id="activeFilterFalse" name="activeFilterFalse" value="false"/>
-                    <label for="activeFilterFalse">Inactif</label>
+                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="Refusé"/>
+                    <label for="statusFilterFalse">Refusé</label>
                 </div>
-            </div>
-            <div class="flex-column">
-                <b>Rechercher</b>
-                <input type="text" id="searchFilter" name="searchFilter"/>
+                <div>
+                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="En attente"/>
+                    <label for="statusFilterFalse">En attente</label>
+                </div>
             </div>
         </div>
         <button id="applyButton" class="btn btn-primary">Appliquer</button>
@@ -138,7 +138,7 @@
                 <td class="date" >{{ meeting.date|date('Y-m-d') }}</td>
                 <td class="heure">{{ meeting.meetingTime|date('Y-m-d') }}</td>
                 <td class="location">{{ meeting.location }} </td>
-                <td class="Status"> {{ meeting.status.name}} </td>       
+                <td class="status">{{ meeting.status.name}}</td>       
             </tr>
         {% endfor %}
     </table>
@@ -155,66 +155,32 @@
             arrow.classList.toggle('down');
             filterDiv.toggleAttribute('hidden');
         });
+
         let applyButton = document.getElementById('applyButton');
         applyButton.addEventListener('click', function()
         {
             let tableRows = document.getElementsByClassName('tableRow');
-            let roleFilters = document.getElementsByClassName('roleFilter');
-            let activeFilters = document.getElementsByClassName('activeFilter');
-            let searchFilter = document.getElementById('searchFilter').value;
-            let roleArray = [], activeArray = [];
-            // Check for filters selected
-            for (let rf of roleFilters) 
-            {
-                if (rf.checked)
-                    roleArray.push(rf.value);
-            }
-            for (let af of activeFilters) {
+            let statusFilters = document.getElementsByClassName('statusFilter');
+            
+            let  statusArray = [];
+
+            for (let af of statusFilters) {
                 if (af.checked)
-                    activeArray.push(af.value);
+                    statusArray.push(af.value);
             }
             // Apply filters
             for (let tr of tableRows)
             {
                 tr.removeAttribute('hidden');
-                if (roleArray.length > 0)
+                if (statusArray.length > 0) 
                 {
-                    let role = tr.querySelector('.role').innerHTML;
-                    if (!roleArray.includes(role))
-                        tr.setAttribute('hidden', '');
-                }
-                if (activeArray.length > 0) 
-                {
-                    let active = tr.querySelector('.active');
-                    if (!activeArray.includes(active.checked.toString()))
-                        tr.setAttribute('hidden', '');
-                }
-                if (searchFilter != '') 
-                {
-                    let name = tr.querySelector('.name').innerHTML.toLowerCase();
-                    let email = tr.querySelector('.email').innerHTML.toLowerCase();
-                    if (!name.includes(searchFilter.toLowerCase()) && !email.includes(searchFilter.toLowerCase()))
+                    let status = tr.querySelector('.status');
+                    if (!statusArray.includes(status.innerHTML))
                         tr.setAttribute('hidden', '');
                 }
             }
         });
-        let checkBoxes = document.getElementsByClassName('selectUser');
-        let options = document.getElementById('userOptions');
-        for (let cb of checkBoxes) 
-        {
-            cb.addEventListener('click', function()
-            {
-                let checked = false;
-                for (let cb of checkBoxes) 
-                {
-                    if (cb.checked)
-                        checked = true;
-                }
-                if (checked)
-                    options.removeAttribute('hidden');
-                else
-                    options.setAttribute('hidden', '');
-            });
-        }
+
+        
     </script>
 {% endblock %}
