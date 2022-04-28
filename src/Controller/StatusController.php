@@ -1,5 +1,16 @@
 <?php
-
+/****************************************
+ Fichier : ApiController.php
+ Auteur : Frederick Perazzelli-Delorme
+ Fonctionnalité : *TEST*
+ Date : 2022/04/21
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ =========================================================
+ À FAIRE :
+****************************************/
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
