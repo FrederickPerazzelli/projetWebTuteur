@@ -1,0 +1,174 @@
+{% block header %}
+<!--****************************************
+ Fichier : index.html.twig
+ Auteur : Jean-Nyckolas Roy
+ Fonctionnalité : A12
+ Date : 2022-04-27
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ 2022-04-27 - Jean-Nyckolas - Affichage de base et ajout des filtres
+ =========================================================
+****************************************-->
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes d'aide{% endblock %}
+
+{% block body %}
+    <style>
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
+        a
+        {
+            text-decoration: none;
+        }
+        .arrow 
+        {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+        .up 
+        {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .down 
+        {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+
+        .demand
+        {
+            border: solid 1px #d4d4d4;
+            padding: 10pt 10pt;
+        }
+
+        #mainDiv
+        {
+            border-collapse: collapse;
+        }
+    </style>
+    {% include 'header.html.twig' %}
+    <h1>Demandes</h1>
+    <button id="filterButton" class="btn btn-light">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+    <div id="filters" hidden>
+        <div class="flex-row">
+            <div class="flex-column">
+                <b>Statut</b>
+                {% for state in status %}
+                    <div>
+                        <input class="statusFilter" type="checkbox" id="statusFilter{{ state.id }}" name="statusFilter{{ state.id }}" value="{{ state.name }}"/>
+                        <label for="statusFilter{{ state.id }}">{{ state.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="flex-column">
+                <b>Catégorie</b>
+                <select id="categoryFilter">
+                    <option value="0">Toutes</option>
+                    {% for c in categories %}
+                        <option value="{{ c.name }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex-column">
+                <b>Rechercher</b>
+                <input type="text" id="searchFilter" name="searchFilter"/>
+            </div>
+        </div>
+        <button id="applyButton" class="btn btn-primary">Appliquer</button>
+    </div>
+    <div id="mainDiv" class="flex-column">
+        {% for d in demands %}
+            <div class="demand">
+                <div class="flex-row">
+                    <h4>
+                    <a href="demand/{{ d.id }}" class="title">{{ d.title }}</a>
+                    {% if d.status.id == 10 %}
+                        <span value="{{ d.status.id }}" class="badge bg-success status">{{ d.status.name }}</span>
+                    {% else %}
+                        <span value="{{ d.status.id }}" class="badge bg-warning text-dark status">{{ d.status.name }}</span>
+                    {% endif %}
+                    </h4>
+                </div>
+                <p class="comment">{{ d.comments }}</p>
+                <hr>
+                <div class="flex-row">
+                    <span class="badge rounded-pill bg-primary category">{{ d.category.name }}</span>
+                    <span class="right">Écrit par paul le {{ d.publishDate|date('d-m-Y') }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% include 'footer.html.twig' %}
+    <script>
+        let applyButton = document.getElementById('applyButton');
+        applyButton.addEventListener('click', function()
+        {
+            let demands = document.getElementsByClassName('demand');
+
+            let statusFilters = document.getElementsByClassName('statusFilter');
+            let categoryFilter = document.getElementById('categoryFilter').value;
+            let searchFilter = document.getElementById('searchFilter').value;
+
+            let statusArray = [];
+
+            // Check for filters selected
+            for (let sf of statusFilters) 
+            {
+                if (sf.checked)
+                    statusArray.push(sf.value);
+            }
+
+            // Apply filters
+            for (let d of demands)
+            {
+                d.removeAttribute('hidden');
+                if (statusArray.length > 0)
+                {
+                    let state = d.querySelector('.status').innerHTML;
+                    if (!statusArray.includes(state))
+                        d.setAttribute('hidden', '');
+                }
+
+                if (categoryFilter != 0) 
+                {
+                    let category = d.querySelector('.category').innerHTML;
+                    if (categoryFilter != category)
+                        d.setAttribute('hidden', '');
+                }
+
+                if (searchFilter != '') 
+                {
+                    let title = d.querySelector('.comment').innerHTML.toLowerCase();
+                    let comment = d.querySelector('.title').innerHTML.toLowerCase();
+                    if (!title.includes(searchFilter.toLowerCase()) && !comment.includes(searchFilter.toLowerCase()))
+                        d.setAttribute('hidden', '');
+                }
+            }
+        });
+
+        let filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function()
+        {
+            let filterDiv = document.getElementById('filters');
+            let arrow = document.getElementById('filterArrow');
+
+            arrow.classList.toggle('up');
+            arrow.classList.toggle('down');
+            filterDiv.toggleAttribute('hidden');
+        });
+    </script>
+{% endblock %}

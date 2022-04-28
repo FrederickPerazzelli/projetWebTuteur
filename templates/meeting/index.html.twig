@@ -1,0 +1,186 @@
+{% block header %}
+<!--****************************************
+ Fichier : index.html.twig
+ Auteur : Frédérick Perazzelli-Delorme
+ Fonctionnalité : A5
+ Date : 2022-04-21
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ =========================================================
+****************************************-->
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des recontres{% endblock %}
+
+{% block body %}
+    <!--===================== CSS =====================-->
+    <style>
+        table
+        {
+            border-collapse: collapse;
+        }
+        button 
+        {
+            margin: 5px 0px;
+        }
+        a
+        {
+            text-decoration: none;
+        }
+        tr 
+        {
+            border: solid thin;
+        }
+        th 
+        {
+            height: 30pt;
+            background-color: #e34958;
+            color: white;
+        }
+        th, td
+        {
+            text-align: center;
+        }
+        table tr:not([hidden]):nth-child(odd) td
+        {
+            background-color: #d6d6d6;
+        }
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
+        .arrow 
+        {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+        .up 
+        {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .down 
+        {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .flex-row 
+        {
+            display: flex;
+            flex-direction: row;
+        }
+        .flex-column 
+        {
+            display: flex;
+            flex-direction: column;
+        }
+        #searchFilter {
+            width: 100pt;
+        }
+        #userOptions {
+            margin-left: 15pt;
+        }
+    </style>
+
+    <!--===================== HTML =====================-->
+    {% include 'header.html.twig' %}
+    <h1>Historique des Rencontres</h1>
+    <div class="flex-row">
+        <button id="filterButton" class="btn btn-light">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+    </div>
+    <div id="filters" hidden>
+        <div class="flex-row">
+            <div class="flex-column">
+                <b>Status</b>
+                <div>
+                    <input class="statusFilter" type="checkbox" id="statusFilterTrue" name="statusFilterTrue" value="Accepté"/>
+                    <label for="statusFilterTrue">Accepté</label>
+                </div>
+                <div>
+                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="Refusé"/>
+                    <label for="statusFilterFalse">Refusé</label>
+                </div>
+                <div>
+                    <input class="statusFilter" type="checkbox" id="statusFilterFalse" name="statusFilterFalse" value="En attente"/>
+                    <label for="statusFilterFalse">En attente</label>
+                </div>
+            </div>
+        </div>
+        <button id="applyButton" class="btn btn-primary">Appliquer</button>
+    </div>
+    <table class="displayTable col-15 auto">
+        <tr>
+            <th class="col-1"></th>
+            <th class="col-2">Motive</th>
+            <th class="col-2">Etudiant </th>
+            <th class="col-2">Tuteur </th>
+            <th class="col-2">Date</th>
+            <th class="col-2">Heure</th>
+            <th class="col-2">Location</th>
+            <th class="col-2">Status</th>
+        </tr>
+        {% for meeting in meetings %}
+            <tr class="tableRow">
+                <td><input class="selectUser" type="checkbox" id="select{{ meeting.id }}" name="select{{ meeting.id }}"></td>
+                <td> <a href="/meeting/{{ meeting.id }}" class="Motive"> {{ meeting.motive}} </a> </td> 
+                <td class="student">{{ meeting.student.email }}</td>
+                <td class="tutor">{{ meeting.tutor.email }}</td>
+                <td class="date" >{{ meeting.date|date('Y-m-d') }}</td>
+                <td class="heure">{{ meeting.meetingTime|date('h:i:sa') }}</td>
+                <td class="location">{{ meeting.location }} </td>
+                <td class="status">{{ meeting.status.name}}</td>       
+            </tr>
+        {% endfor %}
+    </table>
+    {% include 'footer.html.twig' %}
+
+    <!--===================== JavaScript =====================-->
+    <script async defer>
+        let filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function()
+        {
+            let filterDiv = document.getElementById('filters');
+            let arrow = document.getElementById('filterArrow');
+            arrow.classList.toggle('up');
+            arrow.classList.toggle('down');
+            filterDiv.toggleAttribute('hidden');
+        });
+
+        let applyButton = document.getElementById('applyButton');
+        applyButton.addEventListener('click', function()
+        {
+            let tableRows = document.getElementsByClassName('tableRow');
+            let statusFilters = document.getElementsByClassName('statusFilter');
+            
+            let  statusArray = [];
+
+            for (let af of statusFilters) {
+                if (af.checked)
+                    statusArray.push(af.value);
+            }
+            // Apply filters
+            for (let tr of tableRows)
+            {
+                tr.removeAttribute('hidden');
+                if (statusArray.length > 0) 
+                {
+                    let status = tr.querySelector('.status');
+                    if (!statusArray.includes(status.innerHTML))
+                        tr.setAttribute('hidden', '');
+                }
+            }
+        });
+
+        
+    </script>
+{% endblock %}

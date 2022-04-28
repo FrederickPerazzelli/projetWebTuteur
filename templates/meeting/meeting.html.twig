@@ -1,0 +1,99 @@
+{% block header %}
+<!--****************************************
+ Fichier : meeting.html.twig
+ Auteur : Frédérick Perazzelli-Delorme
+ Fonctionnalité : A5
+ Date : 2022-04-27
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ =========================================================
+****************************************-->
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Rencontre{% endblock %}
+
+{% block body %}
+    <style>
+        .flex-row
+        {
+            display: flex;
+            flex-direction: row;
+        }
+        .flex-column
+        {
+            display: flex;
+            flex-direction: column;
+        }
+        .wrap
+        {
+            flex-wrap: wrap;
+        }
+        .col-1 { width: 8.33%; }
+        .col-2 { width: 16.66%; }
+        .col-3 { width: 25%; }
+        .col-4 { width: 33.33%; }
+        .col-5 { width: 41.66%; }
+        .col-6 { width: 50%; }
+        .col-7 { width: 58.33%; }
+        .col-8 { width: 66.66%; }
+        .col-9 { width: 75%; }
+        .col-10 { width: 83.33%; }
+        .col-11 { width: 91.66%; }
+        .col-12 { width: 100%; }
+        .auto
+        {
+            margin: auto;
+        }
+        .input
+        {
+            margin: 5pt 0pt;
+        }
+        .height-fit
+        {
+            height: fit-content;
+        }
+        .height-fill
+        {
+            height: fit-content;
+        }
+        .right
+        {
+            margin-left: auto;
+            margin-right: 0;
+        }
+        #meetings
+        {
+            flex-grow: 1;
+        }
+        #meetings div
+        {
+            height: 200pt;
+            overflow-wrap: break-word;
+            overflow-y: scroll;
+        }
+    </style>
+    {% include 'header.html.twig' %}
+    <h1 class="flex-row wrap justify-content-center">Rencontre</h1>
+    {{ form_start(form) }}
+    <div class="flex-row wrap justify-content-center">
+        <div class="flex-column col-5">
+            <fieldset>
+                <legend>Informations sur la rencontre</legend>
+                {{ form_row(form.motive) }}
+                {{ form_row(form.student) }}
+                {{ form_row(form.tutor) }}
+                {{ form_row(form.date)  }}
+                {{ form_row(form.meetingTime) }}
+                {{ form_row(form.location) }}
+                {{ form_row(form.comments) }}
+                {{ form_row(form.status) }}
+            </fieldset>
+        </div>
+    </div>
+    {{ form_end(form) }}
+    {% include 'footer.html.twig' %}
+{% endblock %}

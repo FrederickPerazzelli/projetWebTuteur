@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+{% include 'header.html.twig' %}
+
+<div class="d-flex justify-content-center" style="padding: 20px;">
+    <h1>Bienvenue</h1>
+</div>
+
+<div class="d-flex justify-content-center">
+    <img src="{{ asset('swift.png') }}" alt="" class="d-inline-block align-text-top" style="padding: 20px;" >
+</div>
+
+{% include 'footer.html.twig' %}
+
+{% endblock %}

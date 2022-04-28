@@ -1,0 +1,125 @@
+{% block header %}
+<!--****************************************
+ Fichier : profile.html.twig
+ Auteur : Jean-Nyckolas Roy
+ Fonctionnalité : A3
+ Date : 2022-04-26
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ 2022-04-26 - Jean-Nyckolas - Affichage de base et ajout des filtres
+ =========================================================
+****************************************-->
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+    <style>
+        .imageProfil
+        {
+            object-fit: cover;
+            width: 175pt;
+            height: 175pt;
+            border: solid 1px;
+        }
+        
+        #meetings
+        {
+            flex-grow: 1;
+        }
+        #meetings div
+        {
+            height: 200pt;
+            overflow-wrap: break-word;
+            overflow-y: scroll;
+        }
+    </style>
+    {% include 'header.html.twig' %}
+    <h1>Profil</h1>
+    {{ form_start(form) }}
+    <div id="profileForm" class="flex-row wrap">
+        <div class="flex-column col-5">
+            <fieldset>
+                <legend>Informations générales</legend>
+                {{ form_row(form.email, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.firstName, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.lastName, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.phone, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.birthdate, { 'attr':{'disabled':'disabled'} }) }}
+            </fieldset>
+            <fieldset>
+                <legend>Informations académiques</legend>
+                {{ form_row(form.institution, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.field, { 'attr':{'disabled':'disabled'} }) }}
+                {{ form_row(form.masteredSubject, { 'attr':{'disabled':'disabled'} }) }}
+            </fieldset>
+        </div>
+        <div class="flex-column col-5 right">
+            <div class="flex-row wrap">
+                {% if user.image %}
+                    <img class="auto imageProfil" alt="Image profil" src="data:image/png;base64,{{ image }}"></img>
+                {% else %}
+                    <img class="auto imageProfil"/>
+                {% endif %}
+                <fieldset class="flex-column col-12 height-fit">
+                    <legend>Compte</legend>
+                    {{ form_row(form.role, { 'attr':{'disabled':'disabled'} }) }}
+                    {{ form_row(form.validAccount, { 'attr':{'disabled':'disabled'} }) }}
+                </fieldset>
+            </div>
+            <fieldset id="meetings">
+                <legend>Rencontres</legend>
+                <div>
+                    {% for meeting in studentMeetings %}
+                        <p>{{ meeting.date|date('Y-m-d') }} en tant qu'étudiant avec <a href="/profile/{{meeting.tutor.id}}">{{meeting.tutor.firstName}} {{meeting.tutor.lastName}}</a></p>
+                    {% endfor %}
+                    {% for meeting in tutorMeetings %}
+                        <p>{{ meeting.date|date('Y-m-d') }} en tant que tuteur avec <a href="/profile/{{meeting.student.id}}">{{meeting.student.firstName}} {{meeting.student.lastName}}</a></p>
+                    {% endfor %}
+                    {% if studentMeetings is empty and tutorMeetings is empty %}
+                        <p>Aucune rencontre</p>
+                    {% endif %}
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <button id="editButton" type="button" class="btn btn-light">Modifier</button>
+    <div id="editButtons" hidden>
+        <button id="cancelButton" type="button" class="btn btn-danger">Annuler</button>
+        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+    </div>
+    {{ form_end(form) }}
+    {% include 'footer.html.twig' %}
+    <!--===================== JavaScript =====================-->
+    <script>
+        let editButton = document.getElementById('editButton');
+        let inputs = document.querySelectorAll('input, select');
+        let editDiv = document.getElementById('editButtons');
+        editButton.addEventListener('click', function()
+        {
+            for (let input of inputs) 
+            {
+                input.removeAttribute('disabled');
+                editButton.setAttribute('hidden', '');
+
+                editDiv.removeAttribute('hidden');
+            }
+        });
+
+        let cancelbutton = document.getElementById('cancelButton');
+        cancelButton.addEventListener('click', function()
+        {
+            for (let input of inputs) 
+            {
+                input.setAttribute('disabled', '');
+                editButton.removeAttribute('hidden');
+
+                editDiv.setAttribute('hidden', '');
+            }
+        });
+    </script>
+{% endblock %}
