@@ -1,4 +1,14 @@
 <?php
+/****************************************
+ Fichier : AnswerController.php
+ Auteur : Jean-Nyckolas Roy
+ Fonctionnalité : A12
+ Date : 2022-04-28
+ =========================================================
+ Historique de modifications :
+ 2022-04-28 - Jean-Nyckolas - Ajout de la requête d'ajout d'un commentaire
+ =========================================================
+****************************************/
 
 namespace App\Controller;
 

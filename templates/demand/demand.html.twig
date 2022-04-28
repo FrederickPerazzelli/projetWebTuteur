@@ -19,6 +19,14 @@
 
 {% block body %}
     <style>
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
         a
         {
             text-decoration: none;
@@ -28,6 +36,7 @@
             width: fit-content;
         }
     </style>
+    {% include 'header.html.twig' %}
     <h1>{{ demand.title }}</h1>
     <span class="badge rounded-pill bg-primary category">{{ demand.category.name }} - {{ demand.subject }}</span>
     <span><b>{{ answers|length }} réponse(s) -</b></span>

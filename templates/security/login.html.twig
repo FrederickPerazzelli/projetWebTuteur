@@ -3,6 +3,17 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
+{% include "header.html.twig" %}
+<style>
+    img 
+    {
+        object-fit: cover;
+        border-radius: 50%;
+        height: 50pt;
+        width: 50pt;
+        border: solid 2px;
+    }
+</style>
 <form method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
