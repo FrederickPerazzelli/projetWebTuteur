@@ -18,9 +18,6 @@
 {% block title %}Profil{% endblock %}
 
 {% block body %}
-    {% if not app.user or app.user.role.id != 1 %}
-        <script>window.location.href = "/login";</script>
-    {% endif %}
     <style>
         .imageProfil
         {

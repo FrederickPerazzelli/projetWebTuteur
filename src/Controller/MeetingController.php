@@ -27,6 +27,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\MeetingRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 
 
@@ -39,6 +41,9 @@ class MeetingController extends AbstractController
     }
 
     // Liste de tout les meetings
+    /**
+    * @security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/meeting', name: 'app_meeting')]
     public function meetings(ManagerRegistry $doctrine): Response
     {
@@ -51,6 +56,9 @@ class MeetingController extends AbstractController
     }
 
     // Affiche seulement 1 rencontre selon le id
+    /**
+    * @security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/meeting/{id}', name:'app_meetingId')]
     public function meetingId(ManagerRegistry $doctrine, $id, $API = false):Response
     {   

@@ -3,6 +3,7 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
+    {% include "header.html.twig" %}
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
@@ -19,4 +20,5 @@
 
         <button type="submit" class="btn">S'inscrire</button>
     {{ form_end(registrationForm) }}
+    {% include "footer.html.twig" %}
 {% endblock %}

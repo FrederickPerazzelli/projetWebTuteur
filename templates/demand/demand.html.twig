@@ -103,7 +103,7 @@
         {
             if (commentArea.value != '') 
             {
-                addComment({{ demand.id }}, 1, commentArea.value);
+                addComment({{ demand.id }}, {{ app.user.id }}, commentArea.value);
 
                 window.location.href = '/demand/' + {{ demand.id }};
             }

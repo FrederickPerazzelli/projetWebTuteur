@@ -30,11 +30,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class UserController extends AbstractController
 {
     // Imprime la liste des Users
+    /**
+    * @Security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/users', name: 'users')]
     public function listUsers(EntityManagerInterface $em)
     {
@@ -53,6 +57,9 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+    * @Security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/profile/{id}', name: 'profile')]
     public function getProfile(Request $request, EntityManagerInterface $em, $id): Response
     {
@@ -91,6 +98,9 @@ class UserController extends AbstractController
     }
 
     // Supprime un user
+    /**
+    * @Security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/deleteUser/{id}', name: 'deleteUser')]
     public function deleteUser(Request $request, EntityManagerInterface $em, $id)
     {   
@@ -133,6 +143,9 @@ class UserController extends AbstractController
 
 
     // Active un user
+    /**
+    * @Security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/activateUser/{id}', name: 'activateUser')]
     public function activateUser(Request $request, EntityManagerInterface $em, $id)
     {
@@ -147,6 +160,9 @@ class UserController extends AbstractController
     }
 
     // Desactive un User
+    /**
+    * @Security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/deactivateUser/{id}', name: 'deactivateUser')]
     public function deactivateUser(Request $request, EntityManagerInterface $em, $id)
     {

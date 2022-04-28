@@ -24,9 +24,15 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Complaint;
 use App\Entity\User;
 use App\Entity\Status;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class ComplaintController extends AbstractController
 {
+    /**
+    * @security("is_granted('ROLE_ADMIN')")
+    */
     #[Route('/complaint', name: 'app_complaint')] 
     public function index(ManagerRegistry $doctrine): Response
     {
