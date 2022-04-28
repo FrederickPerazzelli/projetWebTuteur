@@ -54,7 +54,7 @@ class MeetingController extends AbstractController
     #[Route('/meeting/{id}', name:'app_meetingId')]
     public function meetingId(ManagerRegistry $doctrine, $id, $API = false):Response
     {   
-        $meeting = $this->meetingManager($doctrine)->find($id);
+        $meeting = $this->meetingManager($doctrine)->getInfoMeeting($id);
 
         if(!$API){
             
@@ -81,7 +81,7 @@ class MeetingController extends AbstractController
     //Renvoie tout les meeting que la personne possède
     public function myMeeting(ManagerRegistry $doctrine, $id):Response
     {   
-        $meetingList = $this->meetingManager($doctrine)->find($id);
+        $meetingList = $this->meetingManager($doctrine)->getAllMyMeeting($id);
 
         $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
         $json = $serializer->serialize($meetingList, 'json');

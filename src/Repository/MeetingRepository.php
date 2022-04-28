@@ -45,6 +45,33 @@ class MeetingRepository extends ServiceEntityRepository
         }
     }
 
+    public function getAllMyMeeting($id){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM meeting WHERE student_id = :id OR tutor_id = :id';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['id' => $id]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+
+    public function getInfoMeeting($id){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM meeting WHERE id = :id';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['id' => $id]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+
+
     // /**
     //  * @return Meeting[] Returns an array of Meeting objects
     //  */
