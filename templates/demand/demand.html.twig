@@ -34,7 +34,7 @@
     <span class="right">Écrit par paul le {{ demand.publishDate|date('d-m-Y') }}</span>
     <hr>
     <div class="flex-row">
-        <div class="flex-column col-6">
+        <div class="flex-column col-6" id="answerFeed">
             {{ demand.comments }}
             <hr>
             {% for a in answers %}
@@ -91,6 +91,8 @@
             if (commentArea.value != '') 
             {
                 addComment({{ demand.id }}, 1, commentArea.value);
+
+                window.location.href = '/demand/' + {{ demand.id }};
             }
         });
 

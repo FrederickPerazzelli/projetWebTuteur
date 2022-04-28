@@ -16,13 +16,16 @@ class AnswerController extends AbstractController
     public function addComment(EntityManagerInterface $em, $demand, $user, $comments)
     {
         $demandObject = $em->getRepository(Demand::class)->find($demand);
-        $userObject = $em->getRepository(Demand::class)->find($user);
+        $userObject = $em->getRepository(User::class)->find($user);
         $answer = new Answer();
         $answer->setDemand($demandObject);
         $answer->setUser($userObject);
         $answer->setComments($comments);
+        $answer->setAnswerDate(new \DateTime());
 
         $em->persist($answer);
         $em->flush();
+
+        return $this->redirect($this->generateUrl('/demand/'+$demand));
     }
 }
