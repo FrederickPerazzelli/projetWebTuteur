@@ -64,16 +64,16 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
 
-            $email = (new Email())
-            ->from('aa@example.com')
-            ->to('you@example.com')
+            //$email = (new Email())
+            //->from('aa@example.com')
+            //->to('you@example.com')
             
     
-            ->subject('Inscription d\un utilisateur')
-            ->text('L\'uilisateur ' . $user->getFirstName() . $user->getLastName() . ' a été inscrit à la base de donnée de l\'interface web.')
-            ->html('<p>Ceci est un message automatisé :</p><p>L\'uilisateur ' . $user->getFirstName() . $user->getLastName() . ' a été inscrit à la base de donnée de l\'interface web.</p><p>Merci, bonne journée</p>');
+            //->subject('Inscription d\un utilisateur')
+            //->text('L\'uilisateur ' . $user->getFirstName() . $user->getLastName() . ' a été inscrit à la base de donnée de l\'interface web.')
+            //->html('<p>Ceci est un message automatisé :</p><p>L\'uilisateur ' . $user->getFirstName() . $user->getLastName() . ' a été inscrit à la base de donnée de l\'interface web.</p><p>Merci, bonne journée</p>');
 
-            $mailer->send($email);
+            //$mailer->send($email);
 
             
             // do anything else you need here, like send an email
