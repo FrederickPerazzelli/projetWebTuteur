@@ -2,15 +2,19 @@
 
 {% block body %}
 
-<li><a href="{{ path('app_home') }}"> Accueil </a></li>
-<li><a href="{{ path('users') }}"> Utilisateurs </a></li>
-<li><a href="{{ path('app_complaint') }}"> Plaintes </a></li>
 
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="padding-left: 10px;">
 
-{% if app.user %}
-<li><a href="{{ path('app_logout') }}"> Déconnexion </a></li>
-{% else %}
-<li><a href="{{ path('app_login') }}"> Connexion </a></li>
-{% endif %}
+    <a class="navbar-brand" href="#"><img src="{{ asset('icon.png') }}" alt="" width="30" height="24" class="d-inline-block align-text-top"></a>
+    <a class="navbar-brand" href="{{ path('app_home') }}"> Accueil </a>
+    <a class="navbar-brand" href="{{ path('users') }}"> Utilisateurs </a>
+    <a class="navbar-brand" href="{{ path('app_complaint') }}"> Plaintes </a>
+    <a class="navbar-brand" href="{{ path('app_meeting') }}"> Rencontres </a>
 
+    {% if app.user %}
+    <a  class="navbar-brand" href="{{ path('app_logout') }}"> Déconnexion </a>
+    {% else %}
+    <a class="navbar-brand" href="{{ path('app_login') }}"> Connexion </a>
+    {% endif %}
+</nav>
 {% endblock %}

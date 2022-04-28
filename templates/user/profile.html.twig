@@ -38,6 +38,7 @@
             overflow-y: scroll;
         }
     </style>
+    {% include 'header.html.twig' %}
     <h1>Profil</h1>
     {{ form_start(form) }}
     <div id="profileForm" class="flex-row wrap">
@@ -92,6 +93,7 @@
         <button type="submit" class="btn btn-primary">Sauvegarder</button>
     </div>
     {{ form_end(form) }}
+    {% include 'footer.html.twig' %}
     <!--===================== JavaScript =====================-->
     <script>
         let editButton = document.getElementById('editButton');
