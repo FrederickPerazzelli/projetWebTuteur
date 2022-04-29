@@ -31,14 +31,15 @@ class ComplaintController extends AbstractController
     }
     public function getComplaint(ManagerRegistry $doctrine, array $filter)
     {
-        
         return $doctrine->getManager()->getRepository(Complaint::class)->find($filter);
     }
     public function getComplaints(ManagerRegistry $doctrine)
     {
         return $doctrine->getManager()->getRepository(Complaint::class)->findAll();
     }
-    public function deleteComplaint(ManagerRegistry $doctrine)
+    #[Route('/delete/{id}', name: 'changeStatus')] 
+
+    public function deleteComplaint(ManagerRegistry $doctrine, $id)
     {
         $em = $doctrine->getManager();
         $Produitsrepository = $em->getRepository(Complaint::class);
@@ -52,10 +53,14 @@ class ComplaintController extends AbstractController
 
     }
     #[Route('/changestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
-    public function changeStatus($statusId, $complaintId)
+    public function changeStatus(ManagerRegistry $doctrine, $statusId, $complaintId)
     {
-
-        return 200;
+        $em = $doctrine->getManager();
+        $Produitsrepository = $em->getRepository(Complaint::class);
+ 
+        $produit = $Produitsrepository->find($complaintId);
+        $produit->setStatus($statusId);
+        $em->persist($produit);
+        $em->flush();
     }
-
 }

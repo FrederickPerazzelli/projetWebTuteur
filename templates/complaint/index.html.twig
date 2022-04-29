@@ -63,9 +63,11 @@
             async function statusUpdate(event)
             {
                 console.log(event)
-                statusId = event.target.selectedOptions[0].dataset.statusId;
-                complaintId = event.target.selectedOptions[0].dataset.complaintId;
-
+                statusId = event.target.selectedOptions[0].dataset.statusid;
+                complaintId = event.target.selectedOptions[0].dataset.complaintid;
+                console.log(event.target.selectedOptions[0].dataset)
+                console.log(statusId)
+                console.log(complaintId)
                 let response = await fetch('/changestatus/'+statusId+'/'+complaintId);
             
                 if (response.status === 200) {
