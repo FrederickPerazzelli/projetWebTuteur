@@ -16,36 +16,67 @@
             <th> Date </th>
             <th> Etat </th>
             <th> idAdmin </th>
-
         </tr>
         {% for complaint in complaints%}
             <tr>                
-                <td> {{complaint.ComplaintId}}</td>
-                <td> {{complaint.userName}}</td>
+                <td > {{complaint.id}}</td>
+                <td> {{complaint.user.firstName }} {{complaint.user.lastName }}</td>
                 <td> {{complaint.description}}</td>
-                <td> {{complaint.date|date("m/d/Y") }}</td>
+                <td> {{complaint.complaintDate|date("m/d/Y") }}</td>
                 <td> 
-                    <select>
+                    <select class='statusSelect'>
                         {% for status in statusList%}
-                            {% if status.type%}
-                            <option id="etat_{{status.id|number_format}}" 
-
-                            {% if status.id == complaint.statusId%} 
-                                selected="selected"
+                            {% if status.statustype.name == 'complaint' %}
+                                <option
+                                    data-complaintId= {{ complaint.id }}
+                                    data-statusId = {{status.id}}
+                                {% if status.id == complaint.status.id %} 
+                                    selected="selected"
+                                {% endif %}
+                                >
+                                    {{status.name}}
+                                </option>
                             {% endif %}
-
-                            >
-                                {{status.name}}
-                            </option>
                         {% endfor %}
                     </select>
                 </td>
-               
-                <td> {{complaint.adminId}}</td>
-
+                <td> 
+                    {{complaint.admin.Id|default('<Your default value here>') }}
+                </td>
+                <td>
+                    <button> Supprimer </button>
+                </td>
             </tr>
         {% endfor %}
     </table>
 </div>
 {% include 'footer.html.twig' %}
+{% endblock %}
+
+{% block javascripts %} 
+    <script type="text/javascript" defer>
+        window.onload = function()
+        {
+            var statusSelect = document.getElementsByClassName('statusSelect');
+            for(var i = 0; i < statusSelect.length; i++) {
+                statusSelect[i].addEventListener("change", statusUpdate);
+            }
+            async function statusUpdate(event)
+            {
+                statusId = event.target.selectedOptions[0].dataset.statusid;
+                complaintId = event.target.selectedOptions[0].dataset.complaintid;
+                
+                console.log(event)
+                console.log(event.target.selectedOptions[0].dataset)
+                console.log(statusId)
+                console.log(complaintId)
+               
+                let response = await fetch('/complaintchangestatus/' + statusId + '/' + complaintId);
+                if (response.status === 200) {
+                    //let data = await response.text();
+                    console.log('Successfully changed status');
+                }
+            }
+        } 
+    </script>
 {% endblock %}
