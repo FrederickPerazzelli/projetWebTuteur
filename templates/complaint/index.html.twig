@@ -12,7 +12,6 @@
             <th> Date </th>
             <th> Etat </th>
             <th> idAdmin </th>
-
         </tr>
         {% for complaint in complaints%}
             <tr>                
@@ -37,7 +36,6 @@
                         {% endfor %}
                     </select>
                 </td>
-               
                 <td> 
                     {{complaint.admin.Id|default('<Your default value here>') }}
                 </td>
@@ -50,9 +48,7 @@
 </div>
 {% endblock %}
 
-
 {% block javascripts %} 
-
     <script type="text/javascript" defer>
         window.onload = function()
         {
@@ -62,25 +58,20 @@
             }
             async function statusUpdate(event)
             {
-                console.log(event)
                 statusId = event.target.selectedOptions[0].dataset.statusid;
                 complaintId = event.target.selectedOptions[0].dataset.complaintid;
+                
+                console.log(event)
                 console.log(event.target.selectedOptions[0].dataset)
                 console.log(statusId)
                 console.log(complaintId)
-                let response = await fetch('/changestatus/'+statusId+'/'+complaintId);
-            
+               
+                let response = await fetch('/complaintchangestatus/' + statusId + '/' + complaintId);
                 if (response.status === 200) {
-                    let data = await response.text();
+                    //let data = await response.text();
                     console.log('Successfully changed status');
                 }
-                
-
-
             }
-
         } 
-      
     </script>
-
 {% endblock %}

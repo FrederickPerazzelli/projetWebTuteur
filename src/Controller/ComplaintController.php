@@ -52,7 +52,7 @@ class ComplaintController extends AbstractController
     {
 
     }
-    #[Route('/changestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
+    #[Route('/complaintchangestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
     public function changeStatus(ManagerRegistry $doctrine, $statusId, $complaintId)
     {
         $em = $doctrine->getManager();
