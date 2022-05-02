@@ -58,9 +58,20 @@ class AnswerController extends AbstractController
     }
 
     // Get tout les réponse a une demande
-    public function listAnswer(ManagerRegistry $doctrine, $id): Response
+    public function listAnswerDemand(ManagerRegistry $doctrine, $id): Response
     {
         $listAnswer = $this->answerManager($doctrine)->getAnswerFromDemand($id);
+    
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($listAnswer, 'json');
+        $response = new Response($json);
+        return $response;       
+    } 
+
+    // Get tout les réponse d'un user
+    public function listAnswerUser(ManagerRegistry $doctrine, $id): Response
+    {
+        $listAnswer = $this->answerManager($doctrine)->getAnswerFromUser($id);
     
         $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
         $json = $serializer->serialize($listAnswer, 'json');
@@ -118,4 +129,32 @@ class AnswerController extends AbstractController
 
         return $response;
     }
+
+     // Delete une reponse
+     public function deleteAnswer(ManagerRegistry $doctrine, $id):Response
+     {   
+         $answer = $this->answerManager($doctrine)->findOneBy(['id' => $id]);
+         
+         if(empty($answer)){
+ 
+             $this->answerManager($doctrine)->remove($answer);
+             
+             $response = new jsonResponse();
+             $response->setContent(json_encode('impossible de supprimer'));
+             $response->headers->set('Content-Type', 'application/json');
+             $response->setCharset('UTF-8');
+                 
+             return $response;
+ 
+         }
+         
+         $this->answerManager($doctrine)->remove($answer);
+ 
+         $response = new jsonResponse();
+         $response->setContent(json_encode('La reponse a ete supprimer'));
+         $response->headers->set('Content-Type', 'application/json');
+         $response->setCharset('UTF-8');
+                 
+         return $response;
+     }
 }

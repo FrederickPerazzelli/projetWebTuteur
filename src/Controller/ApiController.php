@@ -229,12 +229,21 @@ class ApiController extends AbstractController
     *****************************************************************************************************/
 
     //Route aller chercher la liste des reponse a une demande
-    #[Route('/api/answerList/{id}', name: 'api_answerList', methods:'GET')]
-    public function getListAnswer(ManagerRegistry $doctrine, $id, Request $request): Response
+    #[Route('/api/answerListDemand/{id}', name: 'api_answerListDemand', methods:'GET')]
+    public function getListAnswerDemand(ManagerRegistry $doctrine, $id, Request $request): Response
     {
-            $answerController = new AnswerController;
-            $listAnswer = $answerController->listAnswer($doctrine, $id);       
-            return new Response($listAnswer);
+        $answerController = new AnswerController;
+        $listAnswerDemand = $answerController->listAnswerDemand($doctrine, $id);       
+        return new Response($listAnswerDemand);
+    }
+
+    //Route aller chercher la liste des reponse a une demande
+    #[Route('/api/answerListUser/{id}', name: 'api_answerListUser', methods:'GET')]
+    public function getListAnswerUser(ManagerRegistry $doctrine, $id, Request $request): Response
+    {
+        $answerController = new AnswerController;
+        $listAnswerUser = $answerController->listAnswerUser($doctrine, $id);       
+        return new Response($listAnswerUser);
     }
 
     // Route pour aller ajouter une demande
@@ -246,14 +255,14 @@ class ApiController extends AbstractController
         return new Response($response);
     }
 
-    /*// Delete une demande dans la base de données
-    #[Route('/api/deleteDemand/{id}', name:'api_deleteDemand', methods:'DELETE')]
-    public function deleteDemand(ManagerRegistry $doctrine, $id, Request $request): Response
+    // Delete une reponse dans la base de données
+    #[Route('/api/deleteAnswer/{id}', name:'api_deleteAnswer', methods:'DELETE')]
+    public function deleteAnswer(ManagerRegistry $doctrine, $id, Request $request): Response
     {
-        $demandController = new DemandController;
-        $response = $demandController->deleteDemand($doctrine, $id);
+        $answerController = new AnswerController;
+        $response = $answerController->deleteAnswer($doctrine, $id);
         return new Response($response);
-    }*/
+    }
 
     /***************************************************************************************************
     *
