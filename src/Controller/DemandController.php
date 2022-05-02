@@ -150,4 +150,33 @@ class DemandController extends AbstractController
 
         return $response;
     }
+
+
+    // Delete une demande
+    public function deleteDemand(ManagerRegistry $doctrine, $id):Response
+    {   
+        $demand = $this->demandManager($doctrine)->findOneBy(['id' => $id]);
+        
+        if(empty($demand)){
+
+            $this->demandManager($doctrine)->remove($demand);
+
+            $response = new jsonResponse();
+            $response->setContent(json_encode('impossible de supprimer'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+                
+            return $response;
+
+        }
+        
+        $this->demandManager($doctrine)->remove($demand);
+
+        $response = new jsonResponse();
+        $response->setContent(json_encode('La demande a ete supprimer'));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+                
+        return $response;
+    }
 }

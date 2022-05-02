@@ -212,7 +212,14 @@ class ApiController extends AbstractController
         return new Response($response);
     }
 
-
+    // Delete une demande dans la base de données
+    #[Route('/api/deleteDemand/{id}', name:'api_deleteDemand', methods:'DELETE')]
+    public function deleteDemand(ManagerRegistry $doctrine, $id, Request $request): Response
+    {
+        $demandController = new DemandController;
+        $response = $demandController->deleteDemand($doctrine, $id);
+        return new Response($response);
+    }
 
     /***************************************************************************************************
     *
