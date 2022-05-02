@@ -43,7 +43,7 @@
     <h1>{{ demand.title }}</h1>
     <span class="badge rounded-pill bg-primary category">{{ demand.category.name }} - {{ demand.subject }}</span>
     <span><b>{{ answers|length }} réponse(s) -</b></span>
-    <span class="right">Écrit par paul le {{ demand.publishDate|date('d-m-Y') }}</span>
+    <span class="right">Écrit par {{ demand.user.firstName }} {{ demand.user.lastName }}  le {{ demand.publishDate|date('d-m-Y') }}</span>
     <hr>
     <div class="flex-row">
         <div class="flex-column col-6" id="answerFeed">
