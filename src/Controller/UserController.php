@@ -251,10 +251,33 @@ class UserController extends AbstractController
 		return $response;
     }
 
+    // Get User
+    public function compareEmail(EntityManagerInterface $em, $email): Response
+	{
+		
+		if($emailCompare = $em->getRepository(User::class)->getEmail($email))
+        {
+            $response = new jsonResponse();
+            $response->setContent(json_encode('True'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+ 
+            return $response;
+            
+        }else{
 
-     // Post rajoute un user dans la base de donnée
-     public function addUser(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
-     {
+            $response = new jsonResponse();
+            $response->setContent(json_encode('False'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+ 
+            return $response;
+        }
+    }
+    
+    // Post rajoute un user dans la base de donnée
+    public function addUser(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
+    {
         $body = json_decode(
             $request->getContent(), true
         );

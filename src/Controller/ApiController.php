@@ -66,6 +66,15 @@ class ApiController extends AbstractController
         return new Response($tutorsList);
     }
 
+    // Get compare les email
+    #[Route('/api/compareEmail/{email}', name:'get_allTutors', methods:'GET')]
+    public function compareEmail(EntityManagerInterface $em, $email, Request $request) : Response
+    {
+        $userController = new UserController;
+        $response = $userController->compareEmail($em, $email);
+        return new Response($response);
+    }
+
     // Ajoute un utilisateur dans la base données via l'API
     #[Route('/api/addUser', name:'api_addUser', methods:'POST')]
     public function addUser(EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher, Request $request) : Response
