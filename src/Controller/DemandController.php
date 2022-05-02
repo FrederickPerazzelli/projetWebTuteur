@@ -21,10 +21,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use App\Repository\DemandRepository;
 
 class DemandController extends AbstractController
 {
-    
+    // ManagerRegistry pour aller chercher dans la database
+    private function demandManager(ManagerRegistry $doctrine): DemandRepository
+    {
+        return $doctrine->getManager()->getRepository(Demand::class);
+    }
+
+    // Affiche la liste de toute les demandes
     #[Route('/demands', name: 'demands')]
     public function getDemands(EntityManagerInterface $em): Response
     {
@@ -40,6 +52,7 @@ class DemandController extends AbstractController
         ]);
     }
 
+    // Affiche seulement une demande
     #[Route('/demand/{id}', name: 'demand')]
     public function getDemand(EntityManagerInterface $em, $id): Response
     {
@@ -54,4 +67,30 @@ class DemandController extends AbstractController
             'answers' => $answers
         ]);
     }
+
+    // Get toute les demande 
+    public function listDemand(ManagerRegistry $doctrine): Response
+    {
+        $listDemand = $this->demandManager($doctrine)->getAllDemand();
+    
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($listDemand, 'json');
+        $response = new Response($json);
+        return $response;       
+    } 
+
+
+    // Get toute les demandes selon le id de l'utilisateur
+    public function getDemandWithId(ManagerRegistry $doctrine, $id): Response
+    {
+        $demand = $this->demandManager($doctrine)->getInfoDemand($id);
+      
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($demand, 'json');
+        $response = new Response($json);
+        return $response;
+    
+    } 
+
+    
 }
