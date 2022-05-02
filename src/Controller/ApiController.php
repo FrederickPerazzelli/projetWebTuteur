@@ -178,9 +178,32 @@ class ApiController extends AbstractController
 
 
 
+    /***************************************************************************************************
+    *
+    * DEMANDE
+    * Liste de function API afin de get / ajouter / deleter / modifier une demande dans la base de données
+    *
+    *****************************************************************************************************/
 
+    //Route aller chercher la liste des demandes
+    #[Route('/api/demandList', name: 'api_demandList', methods:'GET')]
+    public function getListDemand(ManagerRegistry $doctrine, Request $request): Response
+    {
+            $demandController = new DemandController;
+            $listDemand = $demandController->listDemand($doctrine);       
+            return new Response($listDemand);
+    }
 
+    //Route aller chercher un status selon le ID
+    #[Route('/api/demand/{id}', name: 'api_demandId', methods:'GET')]
+    public function getDemandWIthiD(ManagerRegistry $doctrine, $id, Request $request): Response
+    {   
+            $demandController = new DemandController;
+            $demand = $demandController->getDemandWithId($doctrine, $id);       
+            return new Response($demand);
+    }
 
+    
 
     /***************************************************************************************************
     *
