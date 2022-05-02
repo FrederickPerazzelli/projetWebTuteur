@@ -97,10 +97,10 @@ class AnswerController extends AbstractController
         }
 
         /* 
-        $newDemandMobile = unserialize($body['demands'])
-        $newDemand = new Demand($newDemand);
+        $newAnswerMobile = unserialize($body['answer'])
+        $newAnswer = new Answer($newAnswer);
 
-        $em->persist($newDemand);
+        $em->persist($newAnswer);
         $em->flush();
         */
 
@@ -131,30 +131,30 @@ class AnswerController extends AbstractController
     }
 
      // Delete une reponse
-     public function deleteAnswer(ManagerRegistry $doctrine, $id):Response
-     {   
-         $answer = $this->answerManager($doctrine)->findOneBy(['id' => $id]);
+    public function deleteAnswer(ManagerRegistry $doctrine, $id):Response
+    {   
+        $answer = $this->answerManager($doctrine)->findOneBy(['id' => $id]);
          
-         if(empty($answer)){
+        if(empty($answer)){
  
-             $this->answerManager($doctrine)->remove($answer);
+            $this->answerManager($doctrine)->remove($answer);
              
-             $response = new jsonResponse();
-             $response->setContent(json_encode('impossible de supprimer'));
-             $response->headers->set('Content-Type', 'application/json');
-             $response->setCharset('UTF-8');
+            $response = new jsonResponse();
+            $response->setContent(json_encode('impossible de supprimer'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
                  
-             return $response;
+            return $response;
  
-         }
+        }
          
-         $this->answerManager($doctrine)->remove($answer);
+        $this->answerManager($doctrine)->remove($answer);
  
-         $response = new jsonResponse();
-         $response->setContent(json_encode('La reponse a ete supprimer'));
-         $response->headers->set('Content-Type', 'application/json');
-         $response->setCharset('UTF-8');
+        $response = new jsonResponse();
+        $response->setContent(json_encode('La reponse a ete supprimer'));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
                  
-         return $response;
-     }
+        return $response;
+    }
 }

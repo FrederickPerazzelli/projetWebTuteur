@@ -28,7 +28,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ApiController extends AbstractController
 {
@@ -66,19 +66,15 @@ class ApiController extends AbstractController
         return new Response($tutorsList);
     }
 
-
     // Ajoute un utilisateur dans la base données via l'API
-    /*#[Route('/api/addUser', name:'api_addUser', methods:'POST')]
-    public function addUser(EntityManagerInterface $em, Request $request) : Response
-    {
-        //$userController = new UserController;
-        //$reponse = $userController->addUser($em, $request);
-        
-        $statusController = new StatusController;
-        $reponse = $statusController->addUser($em, $request);
+    #[Route('/api/addUser', name:'api_addUser', methods:'POST')]
+    public function addUser(EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher, Request $request) : Response
+    {        
+        $userController = new UserController;
+        $reponse = $userController->addUser($request, $em, $userPasswordHasher);
 
         return new Response($reponse);
-    }*/
+    }
 
     // Delete un utilisateur dans la base de données via l'API
     #[Route('/api/deleteUser/{id}', name:'api_deleteUser', methods:'DELETE')]

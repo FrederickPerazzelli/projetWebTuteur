@@ -18,6 +18,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Role;
+use App\Entity\Category;
 use App\Entity\Meeting;
 use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,6 +33,8 @@ use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class UserController extends AbstractController
 {
@@ -247,4 +250,74 @@ class UserController extends AbstractController
 			
 		return $response;
     }
+
+
+     // Post rajoute un user dans la base de donnée
+     public function addUser(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
+     {
+        $body = json_decode(
+            $request->getContent(), true
+        );
+ 
+        if(empty($body)){
+ 
+            $response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+ 
+            return $response;
+        }
+ 
+        /* 
+         $newUserFromMobile = unserialize($body['user'])
+         $newUser = new Answer($newUserFromMobile);
+ 
+         $em->persist($newUser);
+         $em->flush();
+        */
+ 
+        $newUser = new User;
+ 
+        $newRole = new Role;
+        $newRole = $em->getRepository(Role::class)->find($body['role']);
+
+        $newCategory = new Category;
+        $newCategory = $em->getRepository(Category::class)->find($body['masteredSubject']);
+
+        $newDate = new \dateTime($body['birthDate']);
+
+        $hashedPassword = $userPasswordHasher->hashPassword(
+            $newUser,
+            $body['mdp']
+        );
+
+        $newUser->setEmail($body['email']);
+        $newUser->setRoles(["ROLE_USER"]);        
+        $newUser->setPassword($hashedPassword);
+        $newUser->setFirstName($body['firstName']);
+        $newUser->setLastName($body['lastName']);
+        $newUser->setInstitution($body['institution']);
+        $newUser->setField($body['field']);
+        $newUser->setPhone($body['phone']);
+        $newUser->setBirthdate($newDate);
+        $newUser->setRegisteredDate(new \DateTime('now'));
+        $newUser->setImage($body['image']);
+        $newUser->setRole($newRole);
+        $newUser->setMasteredSubject($newCategory);
+        $newUser->setIsVerified(True);
+        $newUser->setValidAccount(True);
+
+
+        $em->persist($newUser);
+        $em->flush();
+         
+        $response = new jsonResponse($body);
+        $response->setContent(json_encode('L\'utilisateur a ete ajouter'));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+ 
+        return $response;
+    }
+ 
 }
