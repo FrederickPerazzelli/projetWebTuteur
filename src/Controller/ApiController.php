@@ -228,6 +228,32 @@ class ApiController extends AbstractController
     *
     *****************************************************************************************************/
 
+    //Route aller chercher la liste des reponse a une demande
+    #[Route('/api/answerList/{id}', name: 'api_answerList', methods:'GET')]
+    public function getListAnswer(ManagerRegistry $doctrine, $id, Request $request): Response
+    {
+            $answerController = new AnswerController;
+            $listAnswer = $answerController->listAnswer($doctrine, $id);       
+            return new Response($listAnswer);
+    }
+
+    // Route pour aller ajouter une demande
+    #[Route('/api/addAnswer', name:'api_addAnswer', methods:'POST')]
+    public function addAnswer(Request $request, EntityManagerInterface $em): Response
+    {
+        $answerController = new AnswerController;
+        $response = $answerController->addAnswer($request, $em); 
+        return new Response($response);
+    }
+
+    /*// Delete une demande dans la base de données
+    #[Route('/api/deleteDemand/{id}', name:'api_deleteDemand', methods:'DELETE')]
+    public function deleteDemand(ManagerRegistry $doctrine, $id, Request $request): Response
+    {
+        $demandController = new DemandController;
+        $response = $demandController->deleteDemand($doctrine, $id);
+        return new Response($response);
+    }*/
 
     /***************************************************************************************************
     *

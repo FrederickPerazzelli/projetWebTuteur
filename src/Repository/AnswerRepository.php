@@ -45,6 +45,19 @@ class AnswerRepository extends ServiceEntityRepository
         }
     }
 
+    public function getAnswerFromDemand($id){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM answer WHERE demand_id = :id';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['id' => $id]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+
     // /**
     //  * @return Answer[] Returns an array of Answer objects
     //  */
