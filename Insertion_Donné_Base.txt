@@ -37,9 +37,9 @@ VALUES 	('Dimanche'),
 		('Samedi');
 		
 INSERT INTO User (role_id, mastered_subject_id, email, roles, password, first_name, last_name, institution, field, phone, birthdate, image, valid_account, registered_date)
-VALUES 	('1', NULL, 'Admin@gmail.com', ["ROLE_ADMIN"], 'abcd1234', 'Admin', 'trasteur', NULL, NULL, NULL, 19930518, NULL, 1, 20220421),
-		('2', NULL, 'Étudiant@gmail.com', ["ROLE_USER"], 'abcd1234', 'Etu', 'diant', 'Cegep Sherbrooke', 'Informatique', NULL, 20011027, NULL, 1, 20220421),
-		('3', 4, 'Tuteur@gmail.com', ["ROLE_USER"], 'abcd1234', 'Tu', 'teur', 'Universitée de Sherbrooke', 'Informatique', NULL, 19801225, NULL, 1, 20220421);
+VALUES 	('1', NULL, 'Admin@gmail.com', '["ROLE_ADMIN"]', 'abcd1234', 'Admin', 'trasteur', NULL, NULL, NULL, 19930518, NULL, 1, 20220421),
+		('2', NULL, 'Étudiant@gmail.com', '["ROLE_USER"]', 'abcd1234', 'Etu', 'diant', 'Cegep Sherbrooke', 'Informatique', NULL, 20011027, NULL, 1, 20220421),
+		('3', 4, 'Tuteur@gmail.com', '["ROLE_USER"]', 'abcd1234', 'Tu', 'teur', 'Universitée de Sherbrooke', 'Informatique', NULL, 19801225, NULL, 1, 20220421);
 		
 INSERT INTO availablity (day_id, begin_time, end_time)
 VALUES 	(2, 180000, 200000),
@@ -60,12 +60,13 @@ INSERT INTO meeting (student_id, tutor_id, status_id, motive, meeting_time, loca
 VALUES	(2, 3, 5, 'Rencontre pour un site web' , 180000, 'En ligne', 'J\'ai un problème avec mon symfony'),
 		(2, 3, 6, 'Rencontre pour site web', 180000, 'Café farot', 'J\'ai un problème avec mon modèle MVC');
 	
-INSERT INTO demand(category_id, status_id, title, subject, publish_date, comments)
-VALUES 	(1, 10, 'Essai #3' , 'Rédaction', 20220421180000, 'J\'ai un problème avec mon essai voici les détails : ...'),
-		(3, 9, 'Napoléon', 'Recherche', 20220421100000, 'Quelqu\'un connais Napoléon personnellement, j\'aimerais le rencontrer');
+INSERT INTO demand(category_id, status_id,user_id, title, subject, publish_date, comments)
+VALUES 	(1, 10,2, 'Essai #3' , 'Rédaction', 20220421180000, 'J\'ai un problème avec mon essai voici les détails : ...'),
+		(3, 9, 2,'Napoléon', 'Recherche', 20220421100000, 'Quelqu\'un connais Napoléon personnellement, j\'aimerais le rencontrer');
 		
 INSERT INTO answer (demand_id, user_id, answer_date, comments)
 VALUES 	(1, 3, 20220422000000, 'Voici la réponse'),
 		(2, 3, 20220421200000, 'Napoléon visite ma tante souvent, je t\envoie l\'adresse');
+
 
 		
