@@ -157,7 +157,7 @@ class ApiController extends AbstractController
         return new Response($meetingList);
     }
 
-    // Delete un status dans la base de données
+    // Delete un meeting dans la base de données
     #[Route('/api/deleteMeeting/{id}', name:'api_deleteMeeting', methods:'DELETE')]
     public function deleteMeeting(ManagerRegistry $doctrine, $id, Request $request): Response
     {
@@ -194,7 +194,7 @@ class ApiController extends AbstractController
             return new Response($listDemand);
     }
 
-    //Route aller chercher un status selon le ID
+    //Route aller chercher une demande selon le ID
     #[Route('/api/demand/{id}', name: 'api_demandId', methods:'GET')]
     public function getDemandWIthiD(ManagerRegistry $doctrine, $id, Request $request): Response
     {   
@@ -203,7 +203,24 @@ class ApiController extends AbstractController
             return new Response($demand);
     }
 
-    
+    // Route pour aller ajouter une demande
+    #[Route('/api/addDemand', name:'api_addDemand', methods:'POST')]
+    public function addDemand(Request $request, EntityManagerInterface $em): Response
+    {
+        $demandController = new DemandController;
+        $response = $demandController->addDemand($request, $em); 
+        return new Response($response);
+    }
+
+
+
+    /***************************************************************************************************
+    *
+    * ANSWER
+    * Liste de function API afin de get / ajouter / deleter / modifier une réponse dans la base de données
+    *
+    *****************************************************************************************************/
+
 
     /***************************************************************************************************
     *

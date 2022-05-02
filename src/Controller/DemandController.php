@@ -16,6 +16,7 @@ namespace App\Controller;
 use App\Entity\Demand;
 use App\Entity\Answer;
 use App\Entity\Status;
+use App\Entity\User;
 use App\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +28,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use App\Repository\DemandRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 class DemandController extends AbstractController
 {
@@ -89,8 +91,63 @@ class DemandController extends AbstractController
         $json = $serializer->serialize($demand, 'json');
         $response = new Response($json);
         return $response;
-    
     } 
 
-    
+    // Post rajoute une demande dans la base de donnée
+    //#[Route('/addMeeting', name:'app_addMeeting')]
+    public function addDemand(Request $request, EntityManagerInterface $em): Response
+    {
+        $body = json_decode(
+            $request->getContent(), true
+        );
+
+        if(empty($body)){
+
+            $response = new jsonResponse();
+            $response->setContent(json_encode('Erreur'));
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setCharset('UTF-8');
+
+            return $response;
+        }
+
+        /* 
+        $newDemandMobile = unserialize($body['demands'])
+        $newDemand = new Demand($newDemand);
+
+        $em->persist($newDemand);
+        $em->flush();
+        */
+
+        $newDemand = new Demand;
+
+        $newStatus = new Status;
+        $newStatus = $em->getRepository(Status::class)->find($body['status']);
+
+        $newCategory = new User;
+        $newCategory = $em->getRepository(Category::class)->find($body['category']);
+
+        $newUser = new User;
+        $newUser = $em->getRepository(User::class)->find($body['user']);
+
+        $newDate = new \dateTime($body['dateTime']);
+
+        $newDemand->setTitle($body['title']);
+        $newDemand->setSubject($body['subject']);
+        $newDemand->setCategory($newCategory);
+        $newDemand->setPublishDate($newDate);
+        $newDemand->setComments($body['comment']);
+        $newDemand->setUser($newUser);
+        $newDemand->setStatus($newStatus);
+
+        $em->persist($newDemand);
+        $em->flush();
+        
+        $response = new jsonResponse($body);
+        $response->setContent(json_encode('La demande a ete ajouter'));
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+
+        return $response;
+    }
 }
