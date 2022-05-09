@@ -49,7 +49,11 @@ class DemandRepository extends ServiceEntityRepository
 
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = 'SELECT * FROM demand';
+        $sql = 'SELECT d.id, d.title, d.subject, d.publish_date, d.comments, u.first_name, u.last_name, c.name, s.name
+        FROM demand d
+        INNER JOIN user u ON d.user_id = u.id
+        INNER JOIN category c ON d.category_id = c.id
+        INNER JOIN status s ON d.status_id = s.id';
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
 
