@@ -49,7 +49,9 @@ class AnswerRepository extends ServiceEntityRepository
 
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = 'SELECT * FROM answer WHERE demand_id = :id';
+        $sql = 'SELECT a.id, a.demand_id, a.answer_date, a.comments, u.first_name, u.last_name FROM answer a 
+        INNER JOIN user u ON a.user_id = u.id 
+        WHERE demand_id = :id';
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery(['id' => $id]);
 
@@ -61,7 +63,9 @@ class AnswerRepository extends ServiceEntityRepository
 
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = 'SELECT * FROM answer WHERE user_id = :id';
+        $sql = 'SELECT a.id, a.demand_id, a.answer_date, a.comments, u.first_name, u.last_name FROM answer a 
+        INNER JOIN user u ON a.user_id = u.id 
+        WHERE user_id = :id';
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery(['id' => $id]);
 
