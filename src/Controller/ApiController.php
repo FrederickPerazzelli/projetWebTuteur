@@ -328,4 +328,22 @@ class ApiController extends AbstractController
         $status = $statusController->getStatusWithFilter($em, $filter);
         return new Response($status);
     }
+
+    
+    /***************************************************************************************************
+    *
+    * Catégorie
+    * Liste de function API afin de get / ajouter / deleter / modifier une catégorie dans la base de données
+    *
+    *****************************************************************************************************/
+
+    //Route aller chercher la liste des cagories
+    #[Route('/api/categoryList', name: 'api_categoryList', methods:'GET')]
+    public function getListCategory(ManagerRegistry $doctrine, Request $request): Response
+    {
+            $categoryController = new CategoryController;
+            $listcategory = $categoryController->getListCategory($doctrine, $request);       
+            //return json_decode($listStatus, true);
+            return new Response($listcategory);
+    }
 }
