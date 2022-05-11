@@ -7,6 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -46,17 +49,20 @@ class SecurityController extends AbstractController
 
         if ($user) {
             if (password_verify($body['mdp'], $user->getPassword())) {
-                $body['err'] = "Connecté";
+                $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+                $json = $serializer->serialize($user, 'json');
+                $response = new Response($json);
             }
             else {
                 $body['err'] = "Mot de passe incorrect";
+                $response->setContent(json_encode($body));
             }
         }
         else {
             $body['err'] = "Il n\'y a pas d\'utilisateur pour ce courriel";
+            $response->setContent(json_encode($body));
         }
 
-        $response->setContent(json_encode($body));
         $response->setCharset('UTF-8');
 
         return $response;

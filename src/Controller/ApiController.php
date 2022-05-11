@@ -45,7 +45,7 @@ class ApiController extends AbstractController
     {
         $userController = new UserController;
         $user = $userController->getUserWithId($em, $id);
-        return new Response($user);
+        return new Response($user->getContent());
     }
 
     // Get only tuteur from filter 
