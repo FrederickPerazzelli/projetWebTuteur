@@ -82,7 +82,7 @@ class ApiController extends AbstractController
         $userController = new UserController;
         $reponse = $userController->addUser($request, $em, $userPasswordHasher);
 
-        return new Response($reponse);
+        return new Response($reponse->getContent());
     }
 
     // Delete un utilisateur dans la base de données via l'API
