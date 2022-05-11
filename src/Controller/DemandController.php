@@ -143,11 +143,15 @@ class DemandController extends AbstractController
         $em->persist($newDemand);
         $em->flush();
         
-        $response = new jsonResponse($body);
-        $response->setContent(json_encode('La demande a ete ajouter'));
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setCharset('UTF-8');
+        $json = new jsonResponse($body);
+        $json->setContent(json_encode('La reponse a ete ajouter'));
+        $json->headers->set('Content-Type', 'application/json');
+        $json->setCharset('UTF-8');
 
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($newDemand, 'json');
+        $response = new Response($json);
+        
         return $response;
     }
 

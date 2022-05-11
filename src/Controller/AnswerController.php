@@ -88,11 +88,15 @@ class AnswerController extends AbstractController
 
         if(empty($body)){
 
-            $response = new jsonResponse();
-            $response->setContent(json_encode('Erreur'));
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setCharset('UTF-8');
+            $json = new jsonResponse($body);
+            $json->setContent(json_encode('Erreur'));
+            $json->headers->set('Content-Type', 'application/json');
+            $json->setCharset('UTF-8');
 
+            $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+            $json = $serializer->serialize($user, 'json');
+            $response = new Response($json);
+            
             return $response;
         }
 
@@ -122,12 +126,17 @@ class AnswerController extends AbstractController
         $em->persist($newAnswer);
         $em->flush();
         
-        $response = new jsonResponse($body);
-        $response->setContent(json_encode('La reponse a ete ajouter'));
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setCharset('UTF-8');
+        $json = new jsonResponse($body);
+        $json->setContent(json_encode('La reponse a ete ajouter'));
+        $json->headers->set('Content-Type', 'application/json');
+        $json->setCharset('UTF-8');
 
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($newAnswer, 'json');
+        $response = new Response($json);
+        
         return $response;
+
     }
 
      // Delete une reponse

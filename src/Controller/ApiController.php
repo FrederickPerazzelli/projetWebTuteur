@@ -214,7 +214,7 @@ class ApiController extends AbstractController
     {
         $demandController = new DemandController;
         $response = $demandController->addDemand($request, $em); 
-        return new Response($response);
+        return new Response($response->getContent());
     }
 
     // Delete une demande dans la base de données
@@ -257,7 +257,7 @@ class ApiController extends AbstractController
     {
         $answerController = new AnswerController;
         $response = $answerController->addAnswer($request, $em); 
-        return new Response($response);
+        return new Response($response->getContent());
     }
 
     // Delete une reponse dans la base de données
