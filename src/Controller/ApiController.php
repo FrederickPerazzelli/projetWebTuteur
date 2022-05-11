@@ -94,7 +94,14 @@ class ApiController extends AbstractController
         return new Response($response);
     }
 
-
+    // Authentification 
+    #[Route('/api/login', name:'api_login', methods:'POST')]
+    public function mobileLogin(EntityManagerInterface $em, Request $request): Response
+    {
+        $securityController = new SecurityController;
+        $response = $securityController->mobileLogin($request, $em);
+        return new Response($response->getContent());
+    }
 
 
 
@@ -321,5 +328,4 @@ class ApiController extends AbstractController
         $status = $statusController->getStatusWithFilter($em, $filter);
         return new Response($status);
     }
-
 }
