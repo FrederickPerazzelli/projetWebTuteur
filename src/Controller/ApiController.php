@@ -45,7 +45,7 @@ class ApiController extends AbstractController
     {
         $userController = new UserController;
         $user = $userController->getUserWithId($em, $id);
-        return new Response($user);
+        return new Response($user->getContent());
     }
 
     // Get only tuteur from filter 
@@ -82,7 +82,7 @@ class ApiController extends AbstractController
         $userController = new UserController;
         $reponse = $userController->addUser($request, $em, $userPasswordHasher);
 
-        return new Response($reponse);
+        return new Response($reponse->getContent());
     }
 
     // Delete un utilisateur dans la base de données via l'API
@@ -94,7 +94,14 @@ class ApiController extends AbstractController
         return new Response($response);
     }
 
-
+    // Authentification 
+    #[Route('/api/login', name:'api_login', methods:'POST')]
+    public function mobileLogin(EntityManagerInterface $em, Request $request): Response
+    {
+        $securityController = new SecurityController;
+        $response = $securityController->mobileLogin($request, $em);
+        return new Response($response->getContent());
+    }
 
 
 
@@ -321,5 +328,4 @@ class ApiController extends AbstractController
         $status = $statusController->getStatusWithFilter($em, $filter);
         return new Response($status);
     }
-
 }

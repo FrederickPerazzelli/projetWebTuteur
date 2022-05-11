@@ -302,7 +302,6 @@ class UserController extends AbstractController
             return $response;
         }
 
-
         /* 
          $newUserFromMobile = unserialize($body['user'])
          $newUser = new Answer($newUserFromMobile);
@@ -316,10 +315,34 @@ class UserController extends AbstractController
         $newRole = new Role;
         $newRole = $em->getRepository(Role::class)->find($body['role']);
 
-        $newCategory = new Category;
-        $newCategory = $em->getRepository(Category::class)->find($body['masteredSubject']);
+        if (isset($body['masteredSubject']) && $body['masteredSubject'] != null) {
+            $newCategory = new Category;
+            $newCategory = $em->getRepository(Category::class)->find($body['masteredSubject']);
+        }
+        else {
+            $newCategory = null;
+        }
 
-        $newDate = new \dateTime($body['birthDate']);
+        if (isset($body['image']) && $body['image'] != null) {
+            $newImage = $body['image'];
+        }
+        else {
+            $newImage = null;
+        }
+
+        if ($body['institution'] == "") {
+            $body['institution'] = null;
+        }
+
+        if ($body['field'] == "") {
+            $body['field'] = null;
+        }
+
+        if ($body['phone'] == 0) {
+            $body['phone'] = null;
+        }
+
+        $newDate = new \dateTime($body['birthdate']);
 
         $hashedPassword = $userPasswordHasher->hashPassword(
             $newUser,
@@ -336,7 +359,7 @@ class UserController extends AbstractController
         $newUser->setPhone($body['phone']);
         $newUser->setBirthdate($newDate);
         $newUser->setRegisteredDate(new \DateTime('now'));
-        $newUser->setImage($body['image']);
+        $newUser->setImage($newImage);
         $newUser->setRole($newRole);
         $newUser->setMasteredSubject($newCategory);
         $newUser->setIsVerified(True);
