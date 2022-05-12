@@ -374,6 +374,10 @@ class UserController extends AbstractController
         $response->headers->set('Content-Type', 'application/json');
         $response->setCharset('UTF-8');
  
+        $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
+        $json = $serializer->serialize($newUser, 'json');
+        $response = new Response($json);
+        
         return $response;
     }
  
