@@ -1,82 +1,203 @@
+{% block header %}
+<!--****************************************
+ Fichier : index.html.twig
+ Auteur : Manuel Turcotte
+ Fonctionnalité : 
+ Date : 2022-05-23
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ =========================================================
+****************************************-->
+{% endblock %}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ComplaintController!{% endblock %}
+{% block title %}Gestion des plaintes{% endblock %}
 
 {% block body %}
-{% if not app.user or app.user.role.id != 1 %}
-    <script>window.location.href = "/login";</script>
-{% endif %}
-{% include 'header.html.twig' %}
-<div class="listePlainte">
-    <table>
-        <tr>                
-            <th> Id </th>
-            <th> Utilisateur </th>
-            <th> Desc </th>
-            <th> Date </th>
-            <th> Etat </th>
-            <th> idAdmin </th>
+    {% if not app.user or app.user.role.id != 1 %}
+        <script>window.location.href = "/login";</script>
+    {% endif %}
+
+    <!--===================== CSS =====================-->
+    <style>
+        table
+        {
+            border-collapse: collapse;
+        }
+
+        button 
+        {
+            margin: 5px 0px;
+        }
+
+        a
+        {
+            text-decoration: none;
+        }
+
+        tr 
+        {
+            border: solid thin;
+        }
+
+        th 
+        {
+            height: 30pt;
+            background-color: #e34958;
+            color: white;
+        }
+
+        th, td
+        {
+            text-align: center;
+        }
+
+        table tr:not([hidden]):nth-child(odd) td
+        {
+            background-color: #d6d6d6;
+        }
+
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
+
+        .arrow 
+        {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+
+        .up 
+        {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+        .down 
+        {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+
+        .flex-row 
+        {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .flex-column 
+        {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #searchFilter {
+            width: 100pt;
+        }
+
+        .clickable
+        {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+
+    <!--===================== HTML =====================-->
+    {% include 'header.html.twig' %}
+    <h1>Liste des plaintes</h1>
+    <button id="filterButton" class="btn btn-light">Filtrer <i class="arrow down" id="filterArrow"></i></button>
+    
+    <div id="filters" hidden>
+        <div class="flex-row">
+            <div class="flex-column">
+            <b>Statut</b>
+                {% for state in status %}
+                    <div>
+                        <input class="statusFilter" type="checkbox" id="statusFilter{{ state.id }}" name="statusFilter{{ state.id }}" value="{{ state.name }}"/>
+                        <label for="statusFilter{{ state.id }}">{{ state.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button id="applyButton" class="btn btn-primary">Appliquer</button>
+    </div>
+    
+    <table class="displayTable col-12">
+        <tr>               
+            <th class="col-3 text-center"> Description </th>
+            <th class="col-3 text-center"> Utilisateur </th>
+            <th class="col-3 text-center"> Status </th>
+            <th class="col-3 text-center"> Date </th>
         </tr>
-        {% for complaint in complaints%}
-            <tr>                
-                <td > {{complaint.id}}</td>
-                <td> {{complaint.user.firstName }} {{complaint.user.lastName }}</td>
-                <td> {{complaint.description}}</td>
-                <td> {{complaint.complaintDate|date("m/d/Y") }}</td>
-                <td> 
-                    <select class='statusSelect'>
-                        {% for status in statusList%}
-                            {% if status.statustype.name == 'complaint' %}
-                                <option
-                                    data-complaintId= {{ complaint.id }}
-                                    data-statusId = {{status.id}}
-                                {% if status.id == complaint.status.id %} 
-                                    selected="selected"
-                                {% endif %}
-                                >
-                                    {{status.name}}
-                                </option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </td>
-                <td> 
-                    {{complaint.admin.Id|default('<Your default value here>') }}
-                </td>
-                <td>
-                    <button> Supprimer </button>
-                </td>
+
+        {% for complaint in complaints %}
+            <tr class="tableRow" onclick="viewDetail({{ complaint.id }})">  
+                <td> {{ complaint.description }}</td>     
+                <td> {{ complaint.user.firstName }} {{ complaint.user.lastName }}</td>                
+                <td class="status">{{ complaint.status.name }}</td>
+                <td> {{ complaint.complaintDate|date("m/d/Y") }}</td>
             </tr>
         {% endfor %}
     </table>
-</div>
-{% include 'footer.html.twig' %}
-{% endblock %}
 
-{% block javascripts %} 
-    <script type="text/javascript" defer>
-        window.onload = function()
+    {% include 'footer.html.twig' %}
+
+    <!--===================== JavaScript =====================-->
+    <script async defer>
+        function viewDetail(id)
         {
-            var statusSelect = document.getElementsByClassName('statusSelect');
-            for(var i = 0; i < statusSelect.length; i++) {
-                statusSelect[i].addEventListener("change", statusUpdate);
-            }
-            async function statusUpdate(event)
+            window.location.href = '/complaint/' + id;
+        };
+
+        let filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function()
+        {
+            let filterDiv = document.getElementById('filters');
+            let arrow = document.getElementById('filterArrow');
+
+            arrow.classList.toggle('up');
+            arrow.classList.toggle('down');
+            filterDiv.toggleAttribute('hidden');
+        });
+
+        let applyButton = document.getElementById('applyButton');
+        applyButton.addEventListener('click', function()
+        {
+            let tableRows = document.getElementsByClassName('tableRow');
+            let statusFilters = document.getElementsByClassName('statusFilter');
+            
+            let  statusArray = [];
+
+            for (let sf of statusFilters) 
             {
-                statusId = event.target.selectedOptions[0].dataset.statusid;
-                complaintId = event.target.selectedOptions[0].dataset.complaintid;
-                
-                console.log(event)
-                console.log(event.target.selectedOptions[0].dataset)
-                console.log(statusId)
-                console.log(complaintId)
-               
-                let response = await fetch('/complaintchangestatus/' + statusId + '/' + complaintId);
-                if (response.status === 200) {
-                    //let data = await response.text();
-                    console.log('Successfully changed status');
+                if (sf.checked)
+                    statusArray.push(sf.value);
+            }
+            // Apply filters
+            for (let tr of tableRows)
+            {
+                tr.removeAttribute('hidden');
+                if (statusArray.length > 0) 
+                {
+                    let status = tr.querySelector('.status').innerHTML;
+                    if (!statusArray.includes(status))
+                        tr.setAttribute('hidden', '');
                 }
             }
-        } 
+        });
+
+        
     </script>
 {% endblock %}

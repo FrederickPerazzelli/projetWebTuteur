@@ -49,12 +49,17 @@ class ComplaintRepository extends ServiceEntityRepository
 
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = 'SELECT * FROM complaint';
+        $sql = 'SELECT * FROM complaint ORDER BY status_id ASC, complaint_date ASC';
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
-
+        $resultArray = $resultSet->fetchAllAssociative();
+        
+        foreach ($resultArray as $key => $value) {
+            $complaint = $this->findOneBy(['id' => $value['id']]);
+            $resultArray[$key] = $complaint;
+        }
         // returns an array of arrays (i.e. a raw data set)
-        return $resultSet->fetchAllAssociative();
+        return  $resultArray;
     }
 
     public function getComplaintWithId($id){

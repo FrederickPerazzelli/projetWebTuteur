@@ -1,0 +1,103 @@
+{% block header %}
+<!--****************************************
+ Fichier : complaint.html.twig
+ Auteur : Manuel Turcotte
+ Fonctionnalité : 
+ Date : 2022-05-23
+ Vérification :
+ Date Nom Approuvé
+ =========================================================
+ Historique de modifications :
+ =========================================================
+****************************************-->
+{% endblock %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Demande{% endblock %}
+
+{% block body %}
+    {% if not app.user or app.user.role.id not in [1, 3] %}
+        <script>window.location.href = "/login";</script>
+    {% endif %}
+    <style>
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
+    </style>
+    {% include 'header.html.twig' %}
+    <h1>Plainte de {{ complaint.user.firstName }} {{ complaint.user.lastName }} </h1>
+    <h4>
+        {% if complaint.status.id == 1 %}
+            <span class="badge bg-danger" id="txtState">{{ complaint.status.name }}</span>
+        {% elseif complaint.status.id == 2 %}
+            <span class="badge bg-warning text-dark" id="txtState">{{ complaint.status.name }}</span>
+        {% elseif complaint.status.id == 3 %}
+            <span class="badge bg-success" id="txtState">{{ complaint.status.name }}</span>
+        {% endif %}
+    </h4>
+    <hr>
+
+    <div class="flex-row">
+        <div class="flex-column col-6">
+            <p>{{ complaint.description }}</p>
+            <p>Plainte faite le {{ complaint.complaintDate|date("m/d/Y") }}
+        </div>
+
+        <div class="col-4 right">
+            {% for state in status %}
+                <input type="radio" id="status{{ state.id }}" name="status" value="{{ state.id }}" 
+                    {% if complaint.status.id == state.id %}
+                        checked
+                    {% endif %} 
+                />
+                <label for="status{{ state.id }}">{{ state.name }}</label>
+            {% endfor %}
+            
+        </div>
+    </div>
+    {% include 'footer.html.twig' %}
+    <script>
+        let selStatus =  document.getElementsByName('status');
+        var txtStatus = document.getElementById('txtState');
+
+        for (let state of selStatus){
+            state.addEventListener('change', function()
+            {
+                console.log(state);
+                changeState({{ complaint.id }}, state.value);
+
+            });
+        }
+        
+        /***** Requêtes AJAX *****/
+        async function changeState(complaintId, statusId) 
+        {
+            let response = await fetch('/complaintchangestatus/'+statusId+'/'+complaintId);
+    
+            if (response.status === 200) {
+                let data = await response.text();
+
+                if (statusId == 1) {
+                    txtStatus.className = "badge bg-danger";
+                    txtStatus.innerHTML = "En attente";
+                }    
+                else if (statusId == 2) {
+                    txtStatus.className = "badge bg-warning text-dark";
+                    txtStatus.innerHTML = "Consulté";
+                }
+                else if (statusId == 3) {
+                    txtStatus.className = "badge bg-success";
+                    txtStatus.innerHTML = "Terminé";
+                }
+
+                console.log('State successfully changed');
+            }
+        }
+    </script>
+{% endblock %}

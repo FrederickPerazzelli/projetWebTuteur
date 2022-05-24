@@ -1,7 +1,7 @@
 <?php
 /****************************************
  Fichier : ComplaintController.php
- Auteur : William Goupil
+ Auteur : Manuel Turcotte
  Fonctionnalité : A2, A3
  Date : 2022-04-21
  Vérification :
@@ -13,50 +13,88 @@
 ****************************************/
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use App\Entity\Status;
+use App\Entity\Complaint;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\Complaint;
-use App\Entity\User;
-use App\Entity\Status;
+use App\Repository\ComplaintRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 
 class ComplaintController extends AbstractController
 {
+    // ManagerRegistry pour aller chercher dans la database
+    private function complaintManager(ManagerRegistry $doctrine): ComplaintRepository
+    {
+        return $doctrine->getManager()->getRepository(Complaint::class);
+    }
     
-    //@security("is_granted('ROLE_ADMIN')")
-    
-    #[Route('/complaint', name: 'app_complaint')] 
+    // Liste de tout les plaintes
+    /**
+    * @security("is_granted('ROLE_ADMIN')")
+    */
+    #[Route('/complaints', name: 'app_complaint')] 
     public function index( ManagerRegistry $doctrine): Response
     {
-        $statusManager = $doctrine->getManager()->getRepository(Status::class);
-
-        $complaintList = $this->getComplaints($doctrine);
-        $statusList = $statusManager->findAll();
+        $complaints = $this->complaintManager($doctrine)->getAllComplaint();
+        $status = $doctrine->getRepository(Status::class)->findBy(['statusType' => 1]);
 
         return $this->render('complaint/index.html.twig', [
             'controller_name' => 'ComplaintController',
-            'complaints'=> $complaintList,
-            'statusList' => $statusList
+            'complaints'=> $complaints,
+            'status' => $status
         ]);
     }
-    public function getComplaint(ManagerRegistry $doctrine, array $filter)
-    {
-        return $doctrine->getManager()->getRepository(Complaint::class)->find($filter);
-    }
-    public function getComplaints(ManagerRegistry $doctrine)
-    {
-        return $doctrine->getManager()->getRepository(Complaint::class)->findAll();
-    }
-    #[Route('/delete/{id}', name: 'changeStatus')] 
 
+    // Affiche seulement une plainte
+    /**
+    * @security("is_granted('ROLE_ADMIN')")
+    */
+    #[Route('/complaint/{id}', name: 'complaint')]
+    public function getComplaintId(EntityManagerInterface $doctrine, $id): Response
+    {
+        $complaint = $doctrine->getRepository(Complaint::class)->find($id);
+        $status = $doctrine->getRepository(Status::class)->findBy(['statusType' => 1]);
+
+        return $this->render('complaint/complaint.html.twig', [
+            'controller_name' => 'ComplaintController',
+            'complaint' => $complaint,
+            'status' => $status
+        ]);
+    }
+
+    #[Route('/complaintchangestatus/{statusId}/{complaintId}', name: 'changeStatus')]  
+    public function changeStatus(EntityManagerInterface $doctrine, $statusId, $complaintId): Response
+    {
+        $complaintsRepository = $doctrine->getRepository(Complaint::class);
+        $status = $doctrine->getRepository(Status::class)->findOneBy(['id' => $statusId]);
+ 
+        $complaint = $complaintsRepository->find($complaintId);
+        $complaint->setStatus($status);
+        $doctrine->persist($complaint);
+        $doctrine->flush();
+
+        $response = new Response;
+        $response->setStatusCode(200);
+        return $response;
+    }
+
+    public function assignAdmin()
+    {
+
+    }
+
+    #[Route('/delete/{id}', name: 'deleteComplaint')] 
     public function deleteComplaint(ManagerRegistry $doctrine, $id)
     {
         $em = $doctrine->getManager();
@@ -66,28 +104,12 @@ class ComplaintController extends AbstractController
         $em->remove($produit);
         $em->flush();
     }
-    public function assignAdmin()
-    {
-
-    }
-    #[Route('/complaintchangestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
-    public function changeStatus(ManagerRegistry $doctrine, $statusId, $complaintId)
-    {
-        $em = $doctrine->getManager();
-        $Produitsrepository = $em->getRepository(Complaint::class);
- 
-        $produit = $Produitsrepository->find($complaintId);
-        $produit->setStatus($statusId);
-        $em->persist($produit);
-        $em->flush();
-    }
 
     // Get Complaint with {id}
     // Renvoie un complaint avec l'id selon le sujet d'étude
 	public function getComplaintWithId(ManagerRegistry $doctrine, $id): Response
 	{  
-		$complaintManager = $doctrine->getManager()->getRepository(Complaint::class);
-		$complaint = $complaintManager->getComplaintWithId($id);
+		$complaint = $this->complaintManager($doctrine)->getComplaintWithId($id);
 
 		if(empty($complaint)){
 		
@@ -111,8 +133,7 @@ class ComplaintController extends AbstractController
     // Renvoie la liste de toutes les plaintes
 	public function getAllComplaints(ManagerRegistry $doctrine): Response
 	{  
-		$complaintManager = $doctrine->getManager()->getRepository(Complaint::class);
-		$complaint = $complaintManager->getAllComplaint();
+		$complaint = $this->complaintManager($doctrine)->getAllComplaint();
 
 		if(empty($complaint)){
 		
