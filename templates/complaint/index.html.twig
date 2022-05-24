@@ -1,50 +1,168 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ComplaintController!{% endblock %}
+{% block title %}Plainte{% endblock %}
 
 {% block body %}
+    <!--===================== CSS =====================-->
+    <style>
+        table
+        {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        button 
+        {
+            margin: 5px 0px;
+        }
+        a
+        {
+            text-decoration: none;
+        }
+        tr 
+        {
+            border: solid thin;
+        }
+        th 
+        {
+            height: 30pt;
+            background-color: #e34958;
+            color: white;
+        }
+        th, td
+        {
+            text-align: center;
+        }
+        table tr:not([hidden]):nth-child(odd) td
+        {
+            background-color: #d6d6d6;
+        }
+        img 
+        {
+            object-fit: cover;
+            border-radius: 50%;
+            height: 50pt;
+            width: 50pt;
+            border: solid 2px;
+        }
+        .arrow 
+        {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+        }
+        .up 
+        {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .down 
+        {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .flex-row 
+        {
+            display: flex;
+            flex-direction: row;
+        }
+        .flex-column 
+        {
+            display: flex;
+            flex-direction: column;
+        }
+        #searchFilter {
+            width: 100pt;
+        }
+        #userOptions {
+            margin-left: 15pt;
+        }
+    </style>
 {% if not app.user or app.user.role.id != 1 %}
     <script>window.location.href = "/login";</script>
 {% endif %}
 {% include 'header.html.twig' %}
-<div class="listePlainte">
-    <table>
+<div class="newComplaintList">
+    <h2>Nouvelle</h2>
+    <table class="displayTable col-15 auto">
         <tr>                
-            <th> Id </th>
-            <th> Utilisateur </th>
-            <th> Desc </th>
-            <th> Date </th>
-            <th> Etat </th>
-            <th> idAdmin </th>
+            <th> No             </th>
+            <th> Utilisateur    </th>
+            <th> Description    </th>
+            <th> Date           </th>
+            <th></th><th></th>
         </tr>
-        {% for complaint in complaints%}
+        {% for complaint in newComplaints%}
             <tr>                
                 <td > {{complaint.id}}</td>
                 <td> {{complaint.user.firstName }} {{complaint.user.lastName }}</td>
                 <td> {{complaint.description}}</td>
                 <td> {{complaint.complaintDate|date("m/d/Y") }}</td>
-                <td> 
-                    <select class='statusSelect'>
-                        {% for status in statusList%}
-                            {% if status.statustype.name == 'complaint' %}
-                                <option
-                                    data-complaintId= {{ complaint.id }}
-                                    data-statusId = {{status.id}}
-                                {% if status.id == complaint.status.id %} 
-                                    selected="selected"
-                                {% endif %}
-                                >
-                                    {{status.name}}
-                                </option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </td>
-                <td> 
-                    {{complaint.admin.Id|default('<Your default value here>') }}
+                <td>
+                    <button class="openButton" data-complaintId= {{ complaint.id }}> Assigner  </button>
                 </td>
                 <td>
-                    <button> Supprimer </button>
+                    <button class="deleteButton" data-complaintId= {{ complaint.id }}> Supprimer </button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+<div>
+    <h2>En cours</h2>
+    <table class="displayTable col-15 auto">
+        <tr>                
+            <th> No             </th>
+            <th> Utilisateur    </th>
+            <th> Description    </th>
+            <th> Date           </th>
+            <th> Responsable    </th>
+            <th></th><th></th>
+        </tr>
+        {% for complaint in openComplaints%}
+            <tr>                
+                <td> {{complaint.id}}</td>
+                <td> {{complaint.user.firstName }} {{complaint.user.lastName }}</td>
+                <td> {{complaint.description}}</td>
+                <td> {{complaint.complaintDate|date("m/d/Y") }}</td>
+                 <td> 
+                    {{complaint.admin.Id|default('<button> test </button>')}}
+                </td>
+                <td>
+                    <button class="closeButton" data-complaintId= {{ complaint.id }}> fermer  </button>
+                </td>
+                 <td>
+                    <button class="deleteButton" data-complaintId= {{ complaint.id }}> Supprimer </button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+<div>
+    <h2>Fermer</h2>
+    <table class="displayTable col-15 auto">
+        <tr>                
+            <th> No             </th>
+            <th> Utilisateur    </th>
+            <th> Description    </th>
+            <th> Date           </th>
+            <th> Responsable    </th>
+            <th></th><th></th>
+        </tr>
+        {% for complaint in closeComplaints %}
+            <tr>                
+                <td> {{complaint.id}}</td>
+                <td> {{complaint.user.firstName }} {{complaint.user.lastName }}</td>
+                <td> {{complaint.description}}</td>
+                <td> {{complaint.complaintDate|date("m/d/Y") }}</td>
+                 <td> 
+                    {{complaint.admin.Id}}
+                </td>
+                <td>
+                    <button class="openButton" data-complaintId= {{ complaint.id }}> Réouvrir  </button>
+                </td>
+                 <td>
+                    <button class="deleteButton" data-complaintId= {{ complaint.id }}> Supprimer </button>
                 </td>
             </tr>
         {% endfor %}
@@ -57,25 +175,57 @@
     <script type="text/javascript" defer>
         window.onload = function()
         {
-            var statusSelect = document.getElementsByClassName('statusSelect');
+            var statusSelect = document.getElementsByClassName('openButton');
             for(var i = 0; i < statusSelect.length; i++) {
-                statusSelect[i].addEventListener("change", statusUpdate);
+                statusSelect[i].addEventListener("click", openComplaints);
             }
-            async function statusUpdate(event)
+            var statusSelect = document.getElementsByClassName('closeButton');
+            for(var i = 0; i < statusSelect.length; i++) {
+                statusSelect[i].addEventListener("click", closeComplaints);
+            }
+            var deleteButtons = document.getElementsByClassName('deleteButton');
+            for(var i = 0; i < deleteButtons.length; i++) {
+                deleteButtons[i].addEventListener("click", deleteComplaint);
+            }
+            async function openComplaints(event)
             {
-                statusId = event.target.selectedOptions[0].dataset.statusid;
-                complaintId = event.target.selectedOptions[0].dataset.complaintid;
-                
-                console.log(event)
-                console.log(event.target.selectedOptions[0].dataset)
-                console.log(statusId)
-                console.log(complaintId)
-               
-                let response = await fetch('/complaintchangestatus/' + statusId + '/' + complaintId);
-                if (response.status === 200) {
-                    //let data = await response.text();
-                    console.log('Successfully changed status');
-                }
+                complaintId = event.target.dataset.complaintid;
+                let data = {'complaint_Id': complaintId};
+
+                fetch("/openComplaint", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(data)
+                    }).then(res => {
+                        console.log("Request complete! response:", res);
+                });
+            }
+            async function closeComplaints(event)
+            {
+                complaintId = event.target.dataset.complaintid;
+
+                let data = {'complaint_Id': complaintId,'status_Id': 3};
+
+                fetch("/complaintchangestatus", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(data)
+                    }).then(res => {
+                        console.log("Request complete! response:", res);
+                });
+            }
+            async function deleteComplaint(event)
+            {
+                complaintId = event.target.dataset.complaintid;
+                let data = {'complaint_Id': complaintId};
+
+                fetch("/delete", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(data)
+                    }).then(res => {
+                        console.log("Request complete! response:", res);
+                });
             }
         } 
     </script>

@@ -75,15 +75,14 @@ class MeetingController extends AbstractController
                 'form' => $form->createView(),
                 'meeting' => $meeting
             ]);
-
-        }else{
-
+        }
+        else
+        {
             $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
             $json = $serializer->serialize($meeting, 'json');
             $response = new Response($json);
             return $response;
         }
-        
     }
 
     //Renvoie tout les meeting que la personne possède
@@ -94,7 +93,7 @@ class MeetingController extends AbstractController
         $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
         $json = $serializer->serialize($meetingList, 'json');
         $response = new Response($json);
-        return $response;    
+        return $response;
     }
 
     // Post rajoute un meeting dans la base de donnée
@@ -150,7 +149,6 @@ class MeetingController extends AbstractController
         $response->setCharset('UTF-8');
 
         return $response;
-
     }
 
 
@@ -161,8 +159,8 @@ class MeetingController extends AbstractController
     {   
         $meeting = $this->meetingManager($doctrine)->findOneBy(['id' => $id]);
         
-        if(empty($meeting)){
-
+        if(empty($meeting))
+        {
             $this->meetingManager($doctrine)->remove($meeting);
 
             $response = new jsonResponse();
@@ -171,7 +169,6 @@ class MeetingController extends AbstractController
             $response->setCharset('UTF-8');
                 
             return $response;
-
         }
         
         $this->meetingManager($doctrine)->remove($meeting);
@@ -182,5 +179,14 @@ class MeetingController extends AbstractController
         $response->setCharset('UTF-8');
                 
         return $response;
+    }
+    public function getMeetingsByDate(ManagerRegistry $doctrine, $date)
+    {
+        return $this->meetingManager($doctrine)->getMeetingByDate($date);
+
+    }
+    public function getMeetings($doctrine)
+    {
+        return $this->meetingManager($doctrine)->getAllMeetings();
     }
 }

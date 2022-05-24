@@ -79,7 +79,28 @@ class DemandRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchAllAssociative();
     }
+    public function getDemandWithDate($date){
 
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM demand WHERE publish_date >= :dat';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['dat' => $date]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+    public function getDemands(){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM demand';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
     // /**
     //  * @return Demand[] Returns an array of Demand objects
     //  */

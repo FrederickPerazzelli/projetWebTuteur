@@ -17,69 +17,146 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Complaint;
 use App\Entity\User;
 use App\Entity\Status;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 class ComplaintController extends AbstractController
 {
-    
-    //@security("is_granted('ROLE_ADMIN')")
-    
+    //display the complaints view
     #[Route('/complaint', name: 'app_complaint')] 
     public function index( ManagerRegistry $doctrine): Response
     {
         $statusManager = $doctrine->getManager()->getRepository(Status::class);
+        $userManager = $doctrine->getManager()->getRepository(User::class);
 
-        $complaintList = $this->getComplaints($doctrine);
+        $newComplaintList = $this->getComplaintsBy($doctrine,array('status'=>1));
+        $openComplaintList = $this->getComplaintsBy($doctrine,array('status'=>2));
+        $closeComplaintList = $this->getComplaintsBy($doctrine,array('status'=>3));
+
+
         $statusList = $statusManager->findAll();
 
         return $this->render('complaint/index.html.twig', [
             'controller_name' => 'ComplaintController',
-            'complaints'=> $complaintList,
+            'newComplaints'=> $newComplaintList,
+            'openComplaints'=> $openComplaintList,
+            'closeComplaints'=> $closeComplaintList,
             'statusList' => $statusList
         ]);
     }
+    //get a complaint with a specific filter
     public function getComplaint(ManagerRegistry $doctrine, array $filter)
     {
         return $doctrine->getManager()->getRepository(Complaint::class)->find($filter);
     }
+    //get multiple complaints with a specific filter
+    public function getComplaintsBy(ManagerRegistry $doctrine, array $filter)
+    {
+        return $doctrine->getManager()->getRepository(Complaint::class)->findBy($filter);
+    }
+    //get multiple complaints with a specific filter
+    public function getComplaintsByDate(ManagerRegistry $doctrine, $date)
+    {
+        return $doctrine->getManager()->getRepository(Complaint::class)->getComplaintWithDate($date);
+    }
+    //get all complaints
     public function getComplaints(ManagerRegistry $doctrine)
     {
         return $doctrine->getManager()->getRepository(Complaint::class)->findAll();
     }
-    #[Route('/delete/{id}', name: 'changeStatus')] 
-
+    //delete a complaint
+    #[Route('/delete/{id}', name: 'delete')] 
     public function deleteComplaint(ManagerRegistry $doctrine, $id)
     {
         $em = $doctrine->getManager();
-        $Produitsrepository = $em->getRepository(Complaint::class);
+        $Complaintssrepository = $em->getRepository(Complaint::class);
 
-        $produit = $Produitsrepository->find($id);
-        $em->remove($produit);
+        $complaint = $Complaintssrepository->find($id);
+        $em->remove($complaint);
         $em->flush();
     }
-    public function assignAdmin()
+    //delete a complaint from the web view
+    #[Route('/delete', name: 'delete')]
+    public function deleteComplaintWeb(ManagerRegistry $doctrine, Request $request) : Response
     {
 
+        $body = json_decode(
+            $request->getContent(), true
+        );
+        $complaintId = $body['complaint_Id'];
+        $this->deleteComplaint($doctrine, $complaintId);
+
+        $response = new jsonResponse($body);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+
+        return $response;   
     }
-    #[Route('/complaintchangestatus/{statusId}/{complaintId}', name: 'changeStatus')] 
-    public function changeStatus(ManagerRegistry $doctrine, $statusId, $complaintId)
+    //change the status of a complaint and assign an admin to it
+    #[Route('/openComplaint', name: 'openComplaint')] 
+    public function openComplaint(ManagerRegistry $doctrine, Request $request) : Response
     {
+        $body = json_decode(
+            $request->getContent(), true
+        );
+        $complaintId = $body['complaint_Id'];
+
         $em = $doctrine->getManager();
-        $Produitsrepository = $em->getRepository(Complaint::class);
- 
-        $produit = $Produitsrepository->find($complaintId);
-        $produit->setStatus($statusId);
-        $em->persist($produit);
+
+        $statusRepository = $em->getRepository(Status::class);
+        $Complaintrepository = $em->getRepository(Complaint::class);
+
+        $status = $statusRepository->find(2);
+        $user = $this->getUser();
+        $complaint = $Complaintrepository->find($complaintId);
+
+        $complaint->setAdmin($user);
+        $complaint->setStatus($status);
+        $em->persist($complaint);
         $em->flush();
+
+        $response = new jsonResponse($body);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+
+        return $response;    
+    }
+    //change the status of a complaint
+    #[Route('/complaintchangestatus', name: 'changeStatus')] 
+    public function changeStatus(ManagerRegistry $doctrine, Request $request) : Response
+    {        
+        $body = json_decode(
+            $request->getContent(), true
+        );
+        $statusId = $body['status_Id'];
+        $complaintId = $body['complaint_Id'];
+        $em = $doctrine->getManager();
+        
+        $statusRepository = $em->getRepository(Status::class);
+
+        $status = $statusRepository->find($statusId);
+        
+        $Complaintrepository = $em->getRepository(Complaint::class);
+        
+        $complaint = $Complaintrepository->find($complaintId);
+        $complaint->setStatus($status);
+        $em->persist($complaint);
+        $em->flush();
+
+        $response = new jsonResponse($body);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+
+        return $response;    
     }
 
     // Get Complaint with {id}
@@ -90,14 +167,11 @@ class ComplaintController extends AbstractController
 		$complaint = $complaintManager->getComplaintWithId($id);
 
 		if(empty($complaint)){
-		
 			$response = new jsonResponse();
             $response->setContent(json_encode('Erreur'));
             $response->headers->set('Content-Type', 'application/json');
             $response->setCharset('UTF-8');
-
             return $response;
-		
 		}
 		
 		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
@@ -114,15 +188,14 @@ class ComplaintController extends AbstractController
 		$complaintManager = $doctrine->getManager()->getRepository(Complaint::class);
 		$complaint = $complaintManager->getAllComplaint();
 
-		if(empty($complaint)){
-		
+		if(empty($complaint))
+        {
 			$response = new jsonResponse();
             $response->setContent(json_encode('Erreur'));
             $response->headers->set('Content-Type', 'application/json');
             $response->setCharset('UTF-8');
 
             return $response;
-		
 		}
 		
 		$serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));

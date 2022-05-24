@@ -183,4 +183,13 @@ class DemandController extends AbstractController
                 
         return $response;
     }
+    public function getDemandByDate(ManagerRegistry $doctrine, $date)
+    {
+        return $this->demandManager($doctrine)->getDemandWithDate($date);
+    }
+    public function getAllDemands(ManagerRegistry $doctrine)
+    {
+        return $this->demandManager($doctrine)->getDemands();
+
+    }
 }

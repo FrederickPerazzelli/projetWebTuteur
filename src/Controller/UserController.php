@@ -99,7 +99,46 @@ class UserController extends AbstractController
             'image' => $image
         ]);
     }
+    /**
+    * @Security("is_granted('ROLE_ADMIN')")
+    */
+    #[Route('/currentprofile', name: 'currentProfile')]
+    public function currentProfile(Request $request, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $id = $user->getId();
+        $studentMeetings = $em->getRepository(Meeting::class)->findBy(['student' => $id]);
+        $tutorMeetings = $em->getRepository(Meeting::class)->findBy(['tutor' => $id]);
+        $image = $user->getImage();
 
+        if ($image)
+            $image = base64_encode(stream_get_contents($image));
+
+        $form = $this->createForm(UserType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            if ($user->getPhone())
+                $user->setPhone(preg_replace('/[^0-9]/', '', $user->getPhone()));
+            $em->persist($user);
+            $em->flush();
+
+            $session = $request->getSession();
+            $session->getFlashBag()->add('message', 'Le profil #' . $id . ' a bien été modifié');
+
+            return $this->redirect($this->generateUrl('users'));
+        }
+
+        return $this->render('user/profile.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+            'studentMeetings' => $studentMeetings,
+            'tutorMeetings' => $tutorMeetings,
+            'image' => $image
+        ]);
+    }
     // Supprime un user
     /**
     * @Security("is_granted('ROLE_ADMIN')")
