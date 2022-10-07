@@ -141,6 +141,16 @@ class ApiController extends AbstractController
     }
 
 
+    // Ajouter une plainte dans la base de données via l'API
+    #[Route('/api/addComplaint', name:'api_addComplaint', methods:'POST')]
+    public function addComplaint(EntityManagerInterface $em, Request $request) : Response
+    {
+        $complaintController = new ComplaintController;
+        $response = $complaintController->addComplaint($em, $request);
+        return new Response($response->getContent());
+    }
+
+
 
     /***************************************************************************************************
     *

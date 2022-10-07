@@ -19,8 +19,10 @@ use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Complaint;
 use App\Entity\User;
 use App\Entity\Status;
@@ -130,5 +132,35 @@ class ComplaintController extends AbstractController
         $response = new Response($json);
 			
 		return $response;
+    }
+
+    public function addComplaint(EntityManagerInterface $em, Request $request) {
+        $body = json_decode(
+            $request->getContent(), true
+        );
+
+        $userRepository = $em->getRepository(User::class);
+        $status = $em->getRepository(Status::class)->find(1);
+
+        $user = $userRepository->find($body["user"]);
+        $admin = $userRepository->find(1);
+
+        $complaint = new Complaint();
+
+        $complaint->setUser($user);
+        $complaint->setAdmin($admin);
+        $complaint->setStatus($status);
+        $newDate = new \dateTime('now');
+        $complaint->setComplaintDate($newDate);
+        $complaint->setDescription($body["description"]);
+
+        $em->persist($complaint);
+        $em->flush();
+
+        $response = new jsonResponse($body);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setCharset('UTF-8');
+
+        return $response;
     }
 }

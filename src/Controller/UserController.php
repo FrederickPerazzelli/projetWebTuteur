@@ -292,7 +292,7 @@ class UserController extends AbstractController
             return $response;
         }
  
-        if($emailCompare = $em->getRepository(User::class)->getEmail($body['email']))
+        /*if($emailCompare = $em->getRepository(User::class)->getEmail($body['email']))
         {
             $response = new jsonResponse();
             $response->setContent(json_encode('Email existe deja'));
@@ -300,7 +300,7 @@ class UserController extends AbstractController
             $response->setCharset('UTF-8');
  
             return $response;
-        }
+        }*/
 
         /* 
          $newUserFromMobile = unserialize($body['user'])
@@ -370,7 +370,6 @@ class UserController extends AbstractController
         $em->flush();
          
         $response = new jsonResponse($body);
-        $response->setContent(json_encode('L\'utilisateur a ete ajouter'));
         $response->headers->set('Content-Type', 'application/json');
         $response->setCharset('UTF-8');
  
