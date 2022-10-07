@@ -12,8 +12,14 @@
     {% if app.user.role.id == 1 %}
     <a class="navbar-brand" href="{{ path('users') }}"> Utilisateurs </a>
     <a class="navbar-brand" href="{{ path('app_meeting') }}"> Rencontres </a>
+    <a class="navbar-brand" href="{{ path('app_complaint') }}"> Plaintes </a>    
+    <a class="navbar-brand" href="{{ path('app_stat') }}"> Statistique </a>
+
+
     {% endif %}
-    <a class="navbar-brand" href="{{ path('demands') }}"> Demandes d'aide </a>
+    <a class="navbar-brand" href="{{ path('demands') }}"> Demandes</a>
+    <a class="navbar-brand" href="{{ path('currentProfile') }}"> Profil </a>
+
     <a  class="navbar-brand" href="{{ path('app_logout') }}"> Déconnexion </a>
     {% else %}
     <a class="navbar-brand" href="{{ path('app_login') }}"> Connexion </a>

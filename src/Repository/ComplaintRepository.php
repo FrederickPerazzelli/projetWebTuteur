@@ -68,7 +68,17 @@ class ComplaintRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchAllAssociative();
     }
+    public function getComplaintWithDate($date){
 
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM complaint WHERE complaint_date >= :dat';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['dat' => $date]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
     // /**
     //  * @return Complaint[] Returns an array of Complaint objects
     //  */

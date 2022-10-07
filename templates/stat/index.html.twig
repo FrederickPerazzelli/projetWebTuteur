@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques{% endblock %}
+
+{% block body %}
+
+{% if not app.user or app.user.role.id != 1 %}
+    <script>window.location.href = "/login";</script>
+{% endif %}
+{% include 'header.html.twig' %}
+<div class="stat mw-100">
+    <h1> Statistique </h1>
+    {% set i = 0 %}
+
+    {% for title in titles %}    
+        {% set j = 0 %}
+
+        <div class="row mw-100 d-flex justify-content-around">
+            <h2> {{title}} </h2>
+        
+            {% for info in data[i] %}
+                
+                <div class="card text-center" style="width: 18rem;">
+                    <div class="card-body">
+                        <h4 class="card-title"> {{subTitles[j] }}</h3>
+                        <h5 class="card-text">{{info}}</p>
+                    </div>
+                </div>
+                {% set j = j + 1 %}
+
+            {% endfor %}
+        </div>
+        {% set i = i + 1 %}
+
+    {% endfor %}
+</div>
+{% endblock %}
